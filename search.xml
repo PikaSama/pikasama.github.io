@@ -1,0 +1,1043 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>ArchLinux折腾小记 | 安装篇</title>
+    <url>/posts/archnotes-installation/</url>
+    <content><![CDATA[<h1 id="前言">前言<a title="#前言" href="#前言"></a></h1>
+<p>这篇文章算是鸽了很久了，从还没建博客时就写过一次了，只不过是写在笔记本上的2333。本文的安装教程适用于BIOS/MBR引导(因为我的电脑是BIOS引导)，安装步骤参考官方<a href="https://wiki.archlinux.org/index.php/Installation_guide_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)" target="_blank">Wiki</a>和B站up主<a href="https://space.bilibili.com/13081489" target="_blank">TheCW</a>的<a href="https://www.bilibili.com/video/av81146687" target="_blank">视频</a>进行，UEFI引导的教程暂时不做(鸽了鸽了)</p>
+<a id="more"></a>
+<h1 id="下载镜像">下载镜像<a title="#下载镜像" href="#下载镜像"></a></h1>
+<p>进入ArchLinux的<a href="https://www.archlinux.org/download" target="_blank">官方下载页面</a>，找到WorldWide下的China部分，随便选一个镜像站下载系统镜像，这里以<a href="http://mirrors.ustc.edu.cn/archlinux/iso/2020.03.01/" target="_blank">中科大</a>(2020年3月版)为例</p>
+<h1 id="验证镜像">验证镜像<a title="#验证镜像" href="#验证镜像"></a></h1>
+<p>下载完之后我们需要验证镜像的完整性(不过我一般不会这样做的hhh，只要你能保证下载过程中网络没出现什么问题就行)</p>
+<h2 id="windows">Windows<a title="#windows" href="#windows"></a></h2>
+<p>在镜像站里下载md5sums.txt和sha1sums.txt，然后和镜像对比是否一致就行了(虽然官网也有公示校检码)，至于用啥软件就自己找吧，我这里用的是好压自带的工具</p>
+<h2 id="linux">Linux<a title="#linux" href="#linux"></a></h2>
+<p>在镜像站里下载“镜像名.iso.sig”的文件，然后执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gpg --keyserver-options auto-key-retrieve --verify 镜像名.iso.sig</span><br></pre></td></tr></table></figure>
+<h1 id="刻录镜像">刻录镜像<a title="#刻录镜像" href="#刻录镜像"></a></h1>
+<p>我们需要一个u盘来刻录我们的镜像</p>
+<h2 id="windows-1">Windows<a title="#windows-1" href="#windows-1"></a></h2>
+<p>这里用etcher进行刻录，它可以选择镜像后就可以直接刻录，当然你用rufus或其他的也可以</p>
+<h2 id="linux-1">Linux<a title="#linux-1" href="#linux-1"></a></h2>
+<p>先查看自己u盘的盘符</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo fdisk -l</span><br></pre></td></tr></table></figure>
+<p>然后刻录镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dd <span class="keyword">if</span>=你的镜像路径 of=你的u盘盘符 bs=4M</span><br></pre></td></tr></table></figure>
+<p>然后耐心等待…</p>
+<h1 id="启动到live环境">启动到Live环境<a title="#启动到live环境" href="#启动到live环境"></a></h1>
+<ol>
+<li>关机，插上u盘，开机狂按F11(根据你的主板品牌来规定，我的是凄惨红，所以按F11)，在选择界面中用小键盘上下键移动，选择到你的u盘，然后回车</li>
+<li>进入到Arch的引导界面后，回车默认的选项就行了，如果回车后黑屏的，请按Tab键编辑启动参数，加上<code>nomodeset</code>参数即可</li>
+</ol>
+<h1 id="安装系统">安装系统<a title="#安装系统" href="#安装系统"></a></h1>
+<h2 id="设置显示字体(可选)">设置显示字体(可选)<a title="#设置显示字体(可选)" href="#设置显示字体(可选)"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setfont /usr/share/kbd/consolefonts/LatGrkCyr-12x22.psfu.gz</span><br></pre></td></tr></table></figure>
+<p>字体由B站up主<a href="https://space.bilibili.com/13081489" target="_blank">TheCW</a>的<a href="https://www.bilibili.com/video/av81146687" target="_blank">视频</a>推荐</p>
+<h2 id="连接网络">连接网络<a title="#连接网络" href="#连接网络"></a></h2>
+<p>连接方法也同样参考于B站up主<a href="https://space.bilibili.com/13081489" target="_blank">TheCW</a>的<a href="https://www.bilibili.com/video/av81146687" target="_blank">视频</a></p>
+<p>使用ip-link查看当前互联网状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip link</span><br></pre></td></tr></table></figure>
+<h3 id="有线连接">有线连接<a title="#有线连接" href="#有线连接"></a></h3>
+<p>使用动态ip地址分配工具dhcpcd连接网络(后台运行)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dhcpcd &amp;</span><br></pre></td></tr></table></figure>
+<h3 id="无线连接">无线连接<a title="#无线连接" href="#无线连接"></a></h3>
+<p>启用无线网络</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip link <span class="built_in">set</span> wlan0 up</span><br></pre></td></tr></table></figure>
+<p>扫描附近的WIFI</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">iwlist wlan0 scan | grep ESSID</span><br></pre></td></tr></table></figure>
+<p>生成连接无线网络的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wpa_passphrase WIFI名 密码 &gt; internet.conf</span><br></pre></td></tr></table></figure>
+<p>连接无线网络(后台运行)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wpa_supplicant -c internet.conf -i wlan0 &amp;</span><br></pre></td></tr></table></figure>
+<p>使用动态ip地址分配工具dhcpcd连接网络(后台运行)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dhcpcd &amp;</span><br></pre></td></tr></table></figure>
+<h2 id="更新系统时间">更新系统时间<a title="#更新系统时间" href="#更新系统时间"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">timedatectl set-ntp <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="分区">分区<a title="#分区" href="#分区"></a></h2>
+<h3 id="要求">要求<a title="#要求" href="#要求"></a></h3>
+<h4 id="bios/mbr">BIOS/MBR<a title="#bios/mbr" href="#bios/mbr"></a></h4>
+<p>请至少创建两个分区，一个用来作为作为Linux系统的根目录，一个用来作为Swap分区，当然如果你觉得内存够用了可以不用创建Swap分区</p>
+<h4 id="uefi">UEFI<a title="#uefi" href="#uefi"></a></h4>
+<p>咕咕咕…</p>
+<h3 id="分区工具">分区工具<a title="#分区工具" href="#分区工具"></a></h3>
+<h4 id="cfdisk（推荐）">cfdisk（推荐）<a title="#cfdisk（推荐）" href="#cfdisk（推荐）"></a></h4>
+<p>cfdisk拥有GUI界面，操作起来很方便，适合小白</p>
+<p>执行<code>cfdisk</code>命令后你可以看到类似界面，使用方向键进行操作</p>
+<p>主要命令：</p>
+<ul>
+<li>Free Space：空闲空间</li>
+<li>New：新建一个分区</li>
+<li>Resize：调整分区大小</li>
+<li>Delete：删除分区</li>
+<li>Type：分区类型</li>
+<li>Write：向硬盘写入更改</li>
+<li>Quit：退出</li>
+</ul>
+<p>你的所有操作都完成后，按下Write即可生效，然后按下Quit即可退出<br>
+<img src="http://exp-picture.cdn.bcebos.com/739bc049610f8b561540a5dc9ce951e10ff8d398.jpg" alt="avatar"></p>
+<p><img src="http://exp-picture.cdn.bcebos.com/777f3fc2bbd6e1d031ad11d50d254193cfe8af99.jpg" alt="avatar"><br>
+<a href="https://jingyan.baidu.com/article/ce09321bb922da2bff858fdd.html" target="_blank">图片来源</a></p>
+<h4 id="fdisk">fdisk<a title="#fdisk" href="#fdisk"></a></h4>
+<p>查看当前分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fdisk -l</span><br></pre></td></tr></table></figure>
+<p>进入编辑模式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fdisk /dev/sda(你的硬盘位置，以/dev/sda为例)</span><br></pre></td></tr></table></figure>
+<p>这时你输入m可以获取fdisk帮助</p>
+<p>主要命令：</p>
+<ul>
+<li>d：删除一个分区</li>
+<li>F：查看空闲空间</li>
+<li>l：列出已知的分区类型</li>
+<li>n：创建一个分区</li>
+<li>p：查看分区列表</li>
+<li>t：更改分区类型</li>
+<li>w：向硬盘写入更改</li>
+<li>q：不保存更改并退出</li>
+<li>i：查看分区信息</li>
+<li>g：创建一个GPT分区表(会清空当前硬盘数据)</li>
+<li>o：创建一个DOS分区表(会清空当前硬盘数据)</li>
+</ul>
+<p>输入<code>n</code>创建一个新的分区</p>
+<ul>
+<li>Partition number：分区编号，回车默认即可</li>
+<li>First sector：扇区起始位置，回车默认即可</li>
+<li>Last sector：扇区结束位置，如果你想创建一个20G的分区，输入<code>+20G</code>后回车即可</li>
+<li>Do you want to remove the signature ?：是否移除分区的签名，说明你之前创建过这个分区，我们选Yes，改为崭新的分区</li>
+</ul>
+<p>输入<code>p</code>查看你更改后的分区列表</p>
+<p>确认无误后，输入<code>w</code>写入更改</p>
+<h3 id="格式化">格式化<a title="#格式化" href="#格式化"></a></h3>
+<h4 id="bios/mbr-1">BIOS/MBR<a title="#bios/mbr-1" href="#bios/mbr-1"></a></h4>
+<p>格式化主分区(你打算挂载到根目录的分区)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkfs.ext4 /dev/sda6(假设这是你的主分区)</span><br></pre></td></tr></table></figure>
+<p>如果你创建了多个分区，那么这个分区也要格式化(例如你创建了一个分区要挂载到/home上)</p>
+<p>设置swap分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkswap /dev/sda7(假设这是你的swap分区)</span><br></pre></td></tr></table></figure>
+<p>启用swap分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">swapon /dev/sda7</span><br></pre></td></tr></table></figure>
+<h4 id="uefi-1">UEFI<a title="#uefi-1" href="#uefi-1"></a></h4>
+<p>咕咕咕…</p>
+<h3 id="挂载">挂载<a title="#挂载" href="#挂载"></a></h3>
+<h4 id="bios/mbr-2">BIOS/MBR<a title="#bios/mbr-2" href="#bios/mbr-2"></a></h4>
+<p>挂载主分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mount /dev/sda6 /mnt</span><br></pre></td></tr></table></figure>
+<p>如果你有多个分区，请先创建它的目录再挂载(例如你创建了一个分区想要挂载在/home上)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir /mnt/home</span><br><span class="line">mount /dev/sda8(假设为你要挂载到/home分区) /mnt/home</span><br></pre></td></tr></table></figure>
+<h4 id="uefi-2">UEFI<a title="#uefi-2" href="#uefi-2"></a></h4>
+<p>咕咕咕…</p>
+<h2 id="更换软件源">更换软件源<a title="#更换软件源" href="#更换软件源"></a></h2>
+<p>以清华源为例(“+”为添加/输入内容，“-”为删除内容)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/pacman.d/mirrorlist</span><br><span class="line">+ Server=https://mirrors.tuna.tsinghua.edu.cn/archlinux/repo/os/<span class="variable">$arch</span></span><br></pre></td></tr></table></figure>
+<p>刷新软件源</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pacman -Sy</span><br></pre></td></tr></table></figure>
+<h2 id="安装基本组件">安装基本组件<a title="#安装基本组件" href="#安装基本组件"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pacstrap /mnt base base-devel linux linux-firmware nano dhcpcd wpa_supplicant</span><br></pre></td></tr></table></figure>
+<ul>
+<li>base：ArchLinux最小化安装包</li>
+<li>base-devel：base附加的软件包</li>
+<li>linux：Linux内核及模块</li>
+<li>linux-firmware：Linux的固件文件</li>
+<li>nano：文本编辑器</li>
+<li>dhcpcd：动态ip地址分配工具</li>
+<li>wpa_supplicant：支持WPA无线协议和加密认证的连接工具</li>
+</ul>
+<h2 id="生成fstab文件">生成fstab文件<a title="#生成fstab文件" href="#生成fstab文件"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</span><br></pre></td></tr></table></figure>
+<h2 id="进入刚刚安装的新系统">进入刚刚安装的新系统<a title="#进入刚刚安装的新系统" href="#进入刚刚安装的新系统"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">arch-chroot /mnt</span><br></pre></td></tr></table></figure>
+<h2 id="时间设置">时间设置<a title="#时间设置" href="#时间设置"></a></h2>
+<h3 id="设置时区(以上海为例)">设置时区(以上海为例)<a title="#设置时区(以上海为例)" href="#设置时区(以上海为例)"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+<h3 id="同步系统时间">同步系统时间<a title="#同步系统时间" href="#同步系统时间"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hwclock --systohc</span><br></pre></td></tr></table></figure>
+<h2 id="语言设置">语言设置<a title="#语言设置" href="#语言设置"></a></h2>
+<h3 id="编辑语言生成的配置文件">编辑语言生成的配置文件<a title="#编辑语言生成的配置文件" href="#编辑语言生成的配置文件"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/locale.gen</span><br><span class="line">- <span class="comment">#en_US.UTF8 UTF-8</span></span><br><span class="line">+ en_US.UTF-8 UTF-8</span><br></pre></td></tr></table></figure>
+<h3 id="生成语言">生成语言<a title="#生成语言" href="#生成语言"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locale-gen</span><br></pre></td></tr></table></figure>
+<h3 id="设置语言">设置语言<a title="#设置语言" href="#设置语言"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/locale.conf</span><br><span class="line">+ LANG=en_US.UTF-8</span><br></pre></td></tr></table></figure>
+<h2 id="设置主机名">设置主机名<a title="#设置主机名" href="#设置主机名"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/hostname</span><br><span class="line">+ arch(以arch为例)</span><br></pre></td></tr></table></figure>
+<h2 id="编辑hosts文件">编辑hosts文件<a title="#编辑hosts文件" href="#编辑hosts文件"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/hosts</span><br><span class="line">+ 127.0.0.1 localhost</span><br><span class="line">+ ::1 localhost</span><br><span class="line">+ 127.0.0.1 arch(你的主机名).localdomain arch(你的主机名)</span><br></pre></td></tr></table></figure>
+<h2 id="设置root密码">设置root密码<a title="#设置root密码" href="#设置root密码"></a></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">passwd</span><br><span class="line">+ root(你的密码)</span><br></pre></td></tr></table></figure>
+<h2 id="安装引导组件">安装引导组件<a title="#安装引导组件" href="#安装引导组件"></a></h2>
+<h3 id="安装微码(cpu升级驱动用)">安装微码(cpu升级驱动用)<a title="#安装微码(cpu升级驱动用)" href="#安装微码(cpu升级驱动用)"></a></h3>
+<h4 id="intel">Intel<a title="#intel" href="#intel"></a></h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pacman -S intel-ucode</span><br></pre></td></tr></table></figure>
+<h4 id="amd">AMD<a title="#amd" href="#amd"></a></h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pacman -S amd-ucode</span><br></pre></td></tr></table></figure>
+<h3 id="安装grub引导器和其他组件">安装grub引导器和其他组件<a title="#安装grub引导器和其他组件" href="#安装grub引导器和其他组件"></a></h3>
+<h4 id="bios/mbr-3">BIOS/MBR<a title="#bios/mbr-3" href="#bios/mbr-3"></a></h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pacman -S grub os-prober ntfs-3g</span><br></pre></td></tr></table></figure>
+<ul>
+<li>grub：引导器，用于引导多个系统</li>
+<li>os-prober：用于探测其他系统</li>
+<li>ntfs-3g：用于读取ntfs文件系统的分区</li>
+</ul>
+<p>安装grub引导器</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grub-install --target=i386-pc /dev/sda(注意这是你的硬盘，不是分区)</span><br></pre></td></tr></table></figure>
+<p>生成grub配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+<h4 id="uefi-3">UEFI<a title="#uefi-3" href="#uefi-3"></a></h4>
+<p>咕咕咕…</p>
+<h2 id="收尾工作">收尾工作<a title="#收尾工作" href="#收尾工作"></a></h2>
+<h3 id="退出chroot环境">退出chroot环境<a title="#退出chroot环境" href="#退出chroot环境"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<h3 id="杀死网络服务">杀死网络服务<a title="#杀死网络服务" href="#杀死网络服务"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">killall wpa_supplicant dhcpcd</span><br></pre></td></tr></table></figure>
+<h3 id="卸载被挂载的分区">卸载被挂载的分区<a title="#卸载被挂载的分区" href="#卸载被挂载的分区"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">umount -R /mnt</span><br></pre></td></tr></table></figure>
+<h3 id="重启">重启<a title="#重启" href="#重启"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<p>等你的显示屏显示“无信号”的时候，拔掉u盘，然后享受你的ArchLinux吧~</p>
+<h1 id="后记">后记<a title="#后记" href="#后记"></a></h1>
+<p>呼~划水了两个多月了，今天终于写完了</p>
+<p>你如果还看不懂的话，那你还是去看视频吧2333</p>
+<p>如有问题还请指出，我也还是个小白</p>
+<p>过一段时间还会更新另一篇，毕竟你看到标题也知道我不会就只写这一篇的hhhh</p>
+<p>啊，自己给自己挖了个大坑，真好</p>
+<h2 id="感谢">感谢<a title="#感谢" href="#感谢"></a></h2>
+<p>视频：</p>
+<ul>
+<li><a href="http://www.bilibili.com/BV11J411a7Tp" target="_blank">BV11J411a7Tp</a></li>
+</ul>
+<p>文章更新日期：2020.07.16 00:12</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>ArchLinux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/posts/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank">GitHub</a>.</p>
+<p>欢迎来到<a href="https://hexo.io/" target="_blank">Hexo</a>！这是你的第一个文章，查看<a href="https://hexo.io/docs/" target="_blank">文档</a>以获取更多信息。如果你在使用Hexo中遇到任何问题，你可以在<a href="https://hexo.io/docs/troubleshooting.html" target="_blank">常见问题</a>中寻找答案，或在<a href="https://github.com/hexojs/hexo/issues" target="_blank">GitHub</a>上发Issue。</p>
+<a id="more"></a>
+<h2 id="quick-start">Quick Start<a title="#quick-start" href="#quick-start"></a></h2>
+<h2 id="快速开始">快速开始<a title="#快速开始" href="#快速开始"></a></h2>
+<h3 id="create-a-new-post">Create a new post<a title="#create-a-new-post" href="#create-a-new-post"></a></h3>
+<h3 id="创建一个新的文章">创建一个新的文章<a title="#创建一个新的文章" href="#创建一个新的文章"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank">Writing</a><br>
+更多信息：<a href="https://hexo.io/docs/writing.html" target="_blank">写作</a></p>
+<h3 id="run-server">Run server<a title="#run-server" href="#run-server"></a></h3>
+<h3 id="运行本地服务器">运行本地服务器<a title="#运行本地服务器" href="#运行本地服务器"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank">Server</a><br>
+更多信息：<a href="https://hexo.io/docs/server.html" target="_blank">服务器</a></p>
+<h3 id="generate-static-files">Generate static files<a title="#generate-static-files" href="#generate-static-files"></a></h3>
+<h3 id="生成静态文件">生成静态文件<a title="#生成静态文件" href="#生成静态文件"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank">Generating</a><br>
+更多信息：<a href="https://hexo.io/docs/generating.html" target="_blank">生成文件</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites<a title="#deploy-to-remote-sites" href="#deploy-to-remote-sites"></a></h3>
+<h3 id="部署网站至远程主机">部署网站至远程主机<a title="#部署网站至远程主机" href="#部署网站至远程主机"></a></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank">Deployment</a><br>
+更多信息：<a href="https://hexo.io/docs/one-command-deployment.html" target="_blank">部署</a></p>
+<p>Last Update: 2020.07.16 00:01<br>
+文章更新日期：2020.07.16 00:01</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>星与你，消失之日</title>
+    <url>/posts/honkai-star/</url>
+    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.0.2/images/honkai-star.png" alt="avatar"><br>
+<strong>白虹贯日圣贤王一统天下，参商永隔再相逢物是人非。</strong></p>
+<p><strong>天冲临宫借东风再战祸斗，荧惑守心兵马变烽火四起。</strong></p>
+<p><strong>三日并出反叛军攻守同盟，七夕相会煌月城千灯璀璨。</strong></p>
+<a id="more"></a>
+<p><strong>灯影重重溯人潮暗潮涌动，千钧一发解玄机危机四伏。</strong></p>
+<p><strong>巧施谋略花灯引古人相逢，神机妙算烟火落皆是徒劳。</strong></p>
+<p><strong>知天易，逆天难，千般执念终成空。</strong></p>
+<p>— 星与你消失之日</p>
+<p><meting-js server="netease" type="song" id="419594624"></meting-js></p>
+<p><strong>我曾与你共度未来，却不曾知晓你的过去。</strong></p>
+<p><strong>那时的你，和现在的你一样，背负着别人的生死，</strong></p>
+<p><strong>在你活着的时间里，不断被迫重复着过去。</strong></p>
+<p><strong>你还在痛苦着，但你始终没有忘记自己的痛苦。</strong></p>
+<p><strong>而我终于来到你的过去，</strong></p>
+<p><strong>给那一场穿梭在「世界的碎片」间的漫长之旅写下开始的音符。</strong></p>
+<p><strong>哭吧，哭吧，</strong></p>
+<p><strong>感到痛苦的话，像小孩子一样哭到筋疲力尽就好。</strong></p>
+<p><strong>痛苦并不可怕，可怕的是习惯了痛苦后，再也接受不到痛苦。</strong></p>
+<p><strong>因为你不再将自己置于亲历者的境地，而是成为一个旁观者，</strong></p>
+<p><strong>就像现在的我一样，目睹着你经历的那些惨剧。</strong></p>
+<p><strong>“但是想要了解人类，就决不能只是在一旁看着。”</strong></p>
+<p><strong>“你必须和他们站在一起，看看他们在看些什么。”</strong></p>
+<p><strong>这是在遥远的未来，你对我说过的话。</strong></p>
+<p><strong>现在的我试图站在你身边，</strong></p>
+<p><strong>你又在看着什么呢？</strong></p>
+<p><strong>若是还存在着其他旁观者，此时他们一定对你充满期待，</strong></p>
+<p><strong>期待你跨越更多的死亡，直到抵达没有人受伤的圆满结局。</strong></p>
+<p><strong>他们不知道，也不关心你曾经历了什么。</strong></p>
+<p><strong>你所经历的失而复得与得而复失，</strong></p>
+<p><strong>对他们来说也不过是个故事，</strong></p>
+<p><strong>一个他们自以为能猜到结局的故事，</strong></p>
+<p><strong>但现实真会如此吗？</strong></p>
+<p><strong>这个故事无关乎拯救与被拯救，</strong></p>
+<p><strong>它的结局不断被修补着，又生出新的裂痕。</strong></p>
+<p><strong>而你是那个重复、重复、</strong></p>
+<p><strong>重复尝试、遍历痛苦的人。</strong></p>
+<p><strong>做不到的事，不会因为坚持而做到，</strong></p>
+<p><strong>也不会因为一句“我能做到”而发生奇迹。</strong></p>
+<p><strong>我知道，其实你也知道，</strong></p>
+<p><strong>即使你已足够拼命，但现在的你没有这样的能力。</strong></p>
+<p><strong>但我在这里，试图给你提供一个能够破局的契机。</strong></p>
+<p><strong>这就是我……存在于此的意义。</strong></p>
+<p>— Tesla·Zero</p>
+<p>对于一个刚玩三蹦子没多久的菜逼来说，这次的活动剧情搞的我一头雾水，因为三蹦子每一次的活动剧情都是有关联的，这就会导致我们萌新玩家一开始对剧情有了一堆问号，后来我去B站看了一些视频翻了一些评论才能理解活动剧情。</p>
+<p>这次剧情是真的刀，本以为好不容易来了一波糖，结果还是满嘴的刀。</p>
+<p>其实到了剧情后面就会知道，许愿机器格雷姆被祸斗破坏，机器进入自律管理模式（人工智障模式，理解能力降为负数），然后进入自律管理模式后要扫描之前对它许过愿的人，没扫描到观星（当时和舰长传到另一个世界碎片），就认为观星死了，多年后观星成功传送回来，格雷姆就觉得这个观星是个“异物”，要不计代价去消灭她，所以观星注定会死，就有了各种奇葩的死法。</p>
+<p>隔壁的傻子是犹大的N种用法，这个傻子是自我的N种死法。</p>
+<p>不过最后结局还是美好的，既然观星是“异物”，那么让她消失的一种方法就是带她上船，结果就真带上船了。（OHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH ! ! !）</p>
+<p><s>看着最后观星和舰长老夫老妻般的交谈，我真是在床上扭的像条蛆一样（bushi</s></p>
+<p>注：最后剧情的时间线是不一样的，这个时候观星已经被舰长带上船有一段时间了</p>
+<p>小特有一段话反映了现在的一种现象：玩家只想看到完美结局</p>
+<p>当然，人永远都是倾向于美好的事物的，并且他们只喜欢看到他们所希望的，而往往忽略了全局。</p>
+<p>但是，没有痛苦，又哪来的美好，又怎么能让你印象深刻，又怎么能让你有深刻体会呢？</p>
+<p>我们所追寻的美好，难道仅仅是因为喊一句“我能行！”就能追寻得到的吗？</p>
+<p>如果真是这样，在座的各位都已经是成功人士了。</p>
+<p>“完美”的定义是什么？</p>
+<p>是主角喊出了开挂密码“我们Mihuyo真是太NB了，我爱Mihuyo！”，登上了大号，一刀999，从此走上事业巅峰，拥有后宫佳丽三千，成为人生赢家？</p>
+<p>你这跟无脑的龙傲天有什么区别？你要爽，请去看爽番。</p>
+<p>我并不在乎一个动漫，一个电影，一个游戏的结局能有多完美，那些过于完美的龙傲天剧情只会让我觉得我看了一个没有营养的东西。个人而言，只要结局合情合理即可，它有这个结局肯定有它的道理，我不觉得会有NT带有恶意地去写一个BE，这对双方来讲都是吃亏的(除非他做这个就是为了挥霍钱)，所以我不会追究那么多。要是我真遇到BE了，我也不会在评论区下面血口喷人，而是默默地<s>在P站等网站</s>找同人漫画来安慰自己，上逼乎看大佬分析，让自己觉得结局是美好的。</p>
+<p>JO5中，布姐，小飞机，茶哥都去了那个我们未曾看过的世界，我也不会因为这个大喊<s>荒木司马</s>，荒木老贼把这些人物塑造得很好，他们死的有意义。茸茸也终于成为了秧歌Star，这个结局自然不算坏的。</p>
+<p>我没玩过太多的游戏，感觉米忽悠做的剧情真的是一股清流(大多数玩家都被龙傲天剧情麻痹了)<s>我快被刀傻了，刀中还带点糖的那种</s></p>
+<p>理智观看剧情，理智对待游戏。</p>
+<p>不过我还是想说一句：</p>
+<p><strong>我永远喜欢月下和观星！</strong><font color="white">观星真是太戳我的XP了，米忽悠画师可真懂我们绅士的需求。</font></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@latest/images/star.jpg" alt="avatar" class="φcx"></p>
+<p>文章更新日期：2020.8.10 23:48</p>
+]]></content>
+      <categories>
+        <category>闲谈</category>
+      </categories>
+      <tags>
+        <tag>崩坏3</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我不是盘神！</title>
+    <url>/posts/pandownload/</url>
+    <content><![CDATA[<h2 id="谈谈pd事件">谈谈PD事件<a title="#谈谈pd事件" href="#谈谈pd事件"></a></h2>
+<blockquote>
+<p>2020年4月15日，Pandownload软件作者被跨省追捕，受害人刘某称其软件会在未授权的情况下把个人数据分享出去，导致隐私照片和文件被泄露，警方发现该软件可以以非会员权限突破百度网盘官方设定，实现高速下载，系侵入、非法控制计算机信息系统的程序、工具，并且该软件的使用者达到数万人，致使百度公司损失高达上千万元，犯罪嫌疑人涉嫌非法获利30万元。</p>
+</blockquote>
+<blockquote>
+<p>我求求你们别再追查Pandownload了，行吗？263块的超级会员svip，我充了三年，房子充没了。现在好不容易有了速度快的，你们非说它是假的。那软件假不假我们能不知道吗?那软件本来就不用花钱，你说制作者能赚钱吗？谁家能不下载呢，你就能保证你这一辈子不下载吗？你把他抓走了，我们都得2kb/s。我不想慢，我想快点。 ——《我不是盘神》</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="01">01<a title="#01" href="#01"></a></h3>
+<p>百度网盘当初是怎么火起来的？靠的就是大容量和不限速下载，吸引了一大批的用户，造成了当时的同行被百度死死地掐住了脖子，相继退出网盘市场。这场网盘的战争，赢家是百度。</p>
+<p>就在这时，百度几乎是一家独大。好了，用户有了，接下来就是会员的时代了，因为这是它收费的最佳时候，所以，网盘会员就诞生了，当时价格挺低的，十几块钱一个月吧，高速下载，在线解压缩什么的样样齐全，但也还是有不少用户抱怨，但是百度哪会听你的意见？过了一段时间，百度就觉得就算有了这个会员我们还是在亏损，这样下去吃枣药丸，于是来了一波骚操作，超级会员诞生了，只有超级会员才能享受高速下载的权利，那普通会员呢？偷掉普通用户的上传带宽来给他们加速不就行了。这，就是现在的百度网盘。</p>
+<h3 id="02">02<a title="#02" href="#02"></a></h3>
+<p>这个时候大部分用户都愤怒了，纷纷转去其他网盘，但是，他们在百度网盘里的文件要怎么办？</p>
+<p><strong>百度网盘绑架了用户。</strong></p>
+<p>有些用户只好去充超级会员，可好景不长，前一段时间的下载速度还很快，现在就算是超级会员，下载速度也只有0kb/s~1m/s</p>
+<p>用户：“钱我们都交了，但为什么还要限我的速？”</p>
+<p>百度：“难道我们架设服务器，维护服务器不用钱的吗？能给你们用就不错了，你越抱怨我就越限你速！”</p>
+<p>一场用户与百度网盘的战争开始了。</p>
+<h3 id="03">03<a title="#03" href="#03"></a></h3>
+<p>从开始限速的那一刻起，用户与百度网盘的战争就开始了。先是提取直链高速下载，又是使用aria2多线程下载，再而就是其他第三方软件的玄学高速下载。百度也不甘心，为此做了很多对策，例如限制账号登陆才能下载，封ip，拉用户黑名单等。这其中就有一个软件，与百度斗争了多年，他就是Pandownload，他备受众多用户青睐，因为他可以不限速下载文件，又有多种下载方式，网盘资源搜索，剪贴板自动识别分享链接等功能，而这些功能是百度网盘没有的。</p>
+<p>后来，百度又进行了一系列恶心的操作，昔日的那个Pandownload变得不再那么给力，虽然有时候运气好的话就能高速下载，但是大文件是不可能的了。</p>
+<h3 id="04">04<a title="#04" href="#04"></a></h3>
+<p>虽然我们一开始用这软件的时候就会思考：这软件这么牛逼，会不会违法了？被百度发现这软件就凉了。但我们都是本着能用一时就是一时的心态来用这软件的，可是却没想到，灾难会来得这么快。</p>
+<p><strong>他，那个与百度斗争多年的勇士，终究还是倒下了</strong></p>
+<p>2020.4.15，请记住这个日子，这是Pandownload作者被抓的那一天，这是那个配伴了我们整整3年的软件，如今却已经结束了他“罪恶”的一生。</p>
+<p>这一次，百度又赢了，一个大公司拍死了一个个人开发者，这也是中国知识产权保护的胜利，保护了资本的利益。</p>
+<p><strong>互联网精神已死。</strong></p>
+<h3 id="05">05<a title="#05" href="#05"></a></h3>
+<p><strong>为什么那么多人会站在Pandownload一边？</strong></p>
+<p>一句话：百度网盘没有尊重过用户的体验。</p>
+<p>N句话：当“盗版”软件的体验胜过于正版软件，而正版软件还不思悔改，继续自己的老本行，你说用户会站在哪边？</p>
+<p>我家的宽带是200M，我从网上找来一个4G的Windows10系统镜像，不幸的是，分享链接是百度网盘，为了高速下载，我充了超级会员，开始的速度还挺快，但过了一会就掉到100kb/s，再过一会掉到了9kb/s，并且还时不时断开连接，我很愤怒，本以为充了超级会员就能高速下载，没想到却是这样，期望值和现实的差距太大，既然我交了钱，那我就应该拥有相应的服务，而不是给我限速。</p>
+<p>不要跟我说什么架设维护服务器的成本高，我交了钱，你就不应该给我限速，你这是侵犯了我的利益。</p>
+<p>有些人用Pandownload，不是被他不限速下载的功能拉拢来的，而是因为他的其他功能，网盘资源搜索给用户带来了很大的便利。</p>
+<p>想想苹果当年的越狱风波，因为苹果吸取了教训，改进了IOS的用户体验，所以现在大部分人都不会去越狱了。但是百度网盘呢？你们自己心里有数。</p>
+<h3 id="06">06<a title="#06" href="#06"></a></h3>
+<p><strong>刘某确定不是百度的托？</strong></p>
+<p>在我看来，是的。</p>
+<p>Pandownload活了这么久，我不信百度一开始就没有注意到他，怕不是在等待一个最佳的时机。</p>
+<p>而且理由是泄露隐私，说真的，你给我整笑了，请问百度有把隐私做好吗？你在用Pandownload的时候没有看到提示吗？</p>
+<blockquote>
+<p>Pandownload会采集你的分享链接里的信息和提取码上传到云端，用于资源搜索和提取码查询服务。</p>
+</blockquote>
+<p>你不要就在设置里关掉。如果你装了移动端的百度网盘，你啥都不看直接一顿操作点下去，好了，你的相册就上传到百度网盘了。</p>
+<p>那我是不是可以告百度网盘它泄露我隐私了？</p>
+<p>不过我也告不起，毕竟是BAT三大巨头中B公司旗下的软件，法务部虽然比不过T公司的南山必胜客，但也足以打压我这个小布尔乔亚了。</p>
+<p>李彦宏说过一句话：</p>
+<blockquote>
+<p><strong>“中国的消费者在隐私保护的前提下，很多时候是愿意以一定的个人数据授权使用，去换取更加便捷的服务的”</strong></p>
+</blockquote>
+<p>说明白点就是：</p>
+<blockquote>
+<p><strong>“中国人愿意用隐私换取便捷性”</strong></p>
+</blockquote>
+<p>还有就是那句“致使百度公司损失高达上千万元”，你这受害者不是刘某吗，怎么变成百度公司了？</p>
+<h3 id="07">07<a title="#07" href="#07"></a></h3>
+<p>“犯罪嫌疑人涉嫌非法获利30万元”，那30万是通过QQ的付费入群和捐赠得来的，付费入群无非只是抢先体验最新版本而已，作者过一两天就发布了，而且付费入群都是用户自愿的。</p>
+<p><strong>抱歉，我并不认为这是非法盈利。</strong></p>
+<p><strong>同时，百度网盘的收费模式不够妥当。</strong></p>
+<p>30元一个月超级会员，平均每天一块钱，听起来是挺不错，但谁会每天都用百度网盘？</p>
+<p>我一个月也就用两三次而已，我才用这么几次就30元，那我不是血亏？</p>
+<p>我们会用百度网盘，仅仅只是因为资源分享者是上传到百度网盘的而已，每次看到分享链接是百度网盘我就蛋疼，不然你以为我会用？</p>
+<h3 id="08">08<a title="#08" href="#08"></a></h3>
+<p><strong>如果说互联网精神在90年代崛起，在00年代成熟，在10年代老去，那么他就会在20年代死去。</strong></p>
+<p>这一次的事件给国内的所有开发者都敲响了一个警钟。</p>
+<blockquote>
+<p>“说句实话，那个罪在计算机方面基本上就是个口袋罪了，入侵系统定义地模糊不清，完全就是想抓才抓，压力测试，安全测试，哪怕是普通的编程软件都可以扣上一个这样的帽子，真要抓，李老板先看看自己该吃几年公家饭，而且360电脑管家之类的早就该抓了。”</p>
+<p>——视频<a href="http://www.bilibili.com/BV1cV411Z7zu" target="_blank">BV1cV411Z7zu</a>中用户<a href="https://space.bilibili.com/24181107" target="_blank">焱锬焱</a>的评论</p>
+</blockquote>
+<blockquote>
+<p>以下哪些行为是违法犯罪行为?<br>
+A. 污染整个地区的DNS请求,返回无效IP<br>
+B. 在主干网上进行劫持,对特定网站发起Https Mitm攻击<br>
+C. 篡改HTTP响应并插入攻击脚本,对特定网站发起DDoS攻击<br>
+D. 使用多线程下载百度云</p>
+<p>——视频<a href="http://www.bilibili.com/BV1cV411Z7zu" target="_blank">BV1cV411Z7zu</a>中用户<a href="https://space.bilibili.com/30358448" target="_blank">ArinkX</a>的评论</p>
+</blockquote>
+<p>豫章书院你不管，泄露隐私你重拳出击。</p>
+<p>这真的是人民警察吗？</p>
+<h3 id="09">09<a title="#09" href="#09"></a></h3>
+<p>说实话，3年30万，月薪不过万，有这个技术去工作都能有很好的收入，百度为什么就不把他招进来呢？</p>
+<p>看看雷布斯，那些曾经的对手，现在都是他公司的一员了。</p>
+<p>以后碰到宝藏还是偷偷用着吧，其实这种灰色地带的软件更不应该广为流传。</p>
+<blockquote>
+<p>百度网盘和他的所属企业百度都是比较神奇的存在。</p>
+<p>前者是唯一一款在2020年还能经常让用户看到B字节速度的软件。</p>
+<p>后者则是唯一一个在什么领域都能恶心人的企业。</p>
+<p>搜索引擎全是竞价广告……</p>
+<p>贴吧社区被空降和售卖……</p>
+<p>百家号尽是震惊体和抄袭……</p>
+<p>百度知道一句脏话可以成为最佳回答……</p>
+<p>百度全家桶如何卸载是一门深受欢迎的学科</p>
+<p>……</p>
+<p>这么一家丝毫没有底线，丝毫没有荣誉的企业，是中国互联网发展的痔疮，中国互联网形象的癌症。</p>
+<p>——知乎用户<a href="https://www.zhihu.com/people/cai-se-gou-8" target="_blank">彩色狗</a>的<a href="https://www.zhihu.com/question/388021388/answer/1156780516" target="_blank">回答</a></p>
+</blockquote>
+<blockquote>
+<p>以前的百度能解答所有的疑问，</p>
+<p>现在的百度只会告诉你快来评论区和小编一起分享自己的想法。</p>
+<p>从前各家的搜索引擎指向各个论坛博客的搜索结果不复存在，</p>
+<p>取而代之的是竞价排名的广告，和为了版权打的你死我活的各种社交媒体。</p>
+<p>我们常常会说一个行业有着巨大的潜力，伴随着行业的成熟，它会发挥更有意义的作用。</p>
+<p>然而就像人变成熟一样，年少时眼里的光芒逐渐消失，取而代之的是向生活低头。</p>
+<p>也许这样做能让互联网产业有更长远的发展，</p>
+<p>但互联网创建的初心似乎已经被人忘记。</p>
+<p>技术不应该是这样用的，生活也不该是这样的</p>
+<p>pandownload真的好用，感谢！</p>
+<p>——知乎用户<a href="https://www.zhihu.com/people/bai-yuan-29-44" target="_blank">扑棱蛾子</a>的<a href="https://www.zhihu.com/question/388021388/answer/1155875878" target="_blank">回答</a></p>
+</blockquote>
+<p>让一个企业走向低谷的方法，就是不用他们的产品。从今以后我不用百度系产品了，搜索引擎换成必应了，贴吧也不逛了，除非有给我发度盘链接还死都不换其他网盘的傻逼，不然不到迫不得已我是不会用百度网盘的。</p>
+<p>终有一天，在BAT中，B要么就是消失，要么就是被取代。</p>
+<p>A和T在走上坡路，而B还在走下坡路。</p>
+<p>我很看好另一个B公司。</p>
+<p>没什么可以说的了，希望Pandownload作者能渡过难关吧。</p>
+<p>写累了，我列了一些我看的文章和视频，感兴趣的可以去康康。</p>
+<h3 id="感谢：">感谢：<a title="#感谢：" href="#感谢："></a></h3>
+<p>文章：</p>
+<ul>
+<li><a href="https://www.zhihu.com/question/388053258" target="_blank">如何看待 PanDownload 电脑端作者被捕？</a>
+<ul>
+<li>用户<a href="https://www.zhihu.com/people/zhou-hai-yang-49" target="_blank">Ocean</a>的<a href="https://www.zhihu.com/question/388053258/answer/1156321210" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/lc-lee-87" target="_blank">学长Say</a>的<a href="https://www.zhihu.com/question/388021388/answer/1156129894" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/cai-se-gou-8" target="_blank">彩色狗</a>的<a href="https://www.zhihu.com/question/388021388/answer/1156780516" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/li-hai-yang-14-43" target="_blank">工叔</a>的<a href="https://www.zhihu.com/question/388053258/answer/1156296353" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/yomunsam" target="_blank">有木桑</a>的<a href="https://www.zhihu.com/question/388021388/answer/1156151368" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/ma-qin" target="_blank">马小帅</a>的<a href="https://www.zhihu.com/question/388021388/answer/1156385010" target="_blank">回答</a></li>
+<li>用户<a href="https://www.zhihu.com/people/bai-yuan-29-44" target="_blank">扑棱蛾子</a>的<a href="https://www.zhihu.com/question/388021388/answer/1155875878" target="_blank">回答</a></li>
+</ul>
+</li>
+</ul>
+<p>视频：</p>
+<ul>
+<li><a href="http://www.bilibili.com/BV1cV411Z7zu" target="_blank">BV1cV411Z7zu</a></li>
+</ul>
+<p>封面：</p>
+<ul>
+<li><a href="https://www.bilibili.com/read/cv5653663/" target="_blank">CV5653663</a></li>
+</ul>
+<p>文章更新日期：2020.7.18 15:42</p>
+]]></content>
+      <categories>
+        <category>闲谈</category>
+      </categories>
+      <tags>
+        <tag>Pandownload</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>离别，是为了更好的重逢</title>
+    <url>/posts/sayonara/</url>
+    <content><![CDATA[<h2 id="想说的话">想说的话<a title="#想说的话" href="#想说的话"></a></h2>
+<p>人总是要对事情做最坏打算的</p>
+<p>人总是要有一定的风控能力的</p>
+<p>风光一时，不可风光一世</p>
+<p>就如”神龟虽寿，犹有竞时；腾蛇乘雾，终为土灰“一般</p>
+<p>我不想让我的生活掀起什么大波大浪</p>
+<p>但社会强迫我不得不去改变</p>
+<p>社会的毒打让我再次清醒</p>
+<p>我不要被那些所谓的”强者“踩在脚下</p>
+<p>真正的强者，是打倒对手后，又向对手伸出援手</p>
+<p>但这也只是道德的问题，这只是”独赢“和”共赢“的问题</p>
+<p>最后还是得靠自己一个人</p>
+<p>努力，就要有付出；付出，就要有取舍</p>
+<p>屠龙者终成恶龙，我不得不活出自己讨厌的样子</p>
+<p>所以，努力吧，为了那个触不可及的未来</p>
+<p>也许在不久之后，我会感叹</p>
+<p><strong>”这个世界就是这么魔幻啊“</strong></p>
+<h2 id="感谢">感谢<a title="#感谢" href="#感谢"></a></h2>
+<h3 id="封面">封面<a title="#封面" href="#封面"></a></h3>
+<p>Pixiv_ID: <a href="https://www.pixiv.net/member_illust.php?mode=medium&amp;illust_id=62560074" target="_blank">62560074</a></p>
+]]></content>
+      <categories>
+        <category>闲谈</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>如何解决Leancloud的流控问题？</title>
+    <url>/posts/wakeleancloud/</url>
+    <content><![CDATA[<h2 id="前言">前言<a title="#前言" href="#前言"></a></h2>
+<p>最近登上Leancloud的后台，发现云引擎的日志里满屏都是这么一句话</p>
+<p><strong>CloudQueue 运行失败 xxxxx : self_wake !! {“error”:“因流控原因，通过定时任务唤醒体验版实例失败，建议升级至标准版云引擎实例避免休眠 <a href="https://url.leanapp.cn/dwAEksv">https://url.leanapp.cn/dwAEksv</a>”}</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/bqb1.jpg" alt="avatar" class="φcx"></p>
+<a id="more"></a>
+<p>然后我点了这个链接进去看了看，官方给出的说明是这样的</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/leancloud1.png" alt="avatar" class="φcx"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/leancloud2.png" alt="avatar" class="φcx"></p>
+<p>也就是说Leancloud觉得我们白嫖得太厉害了，不给我们通过定时任务来唤醒容器了</p>
+<details>
+<summary>通俗易懂小剧场1</summary>
+<pre>
+容器：今天又是元气满满的一天
+20分钟后
+定时唤醒任务：hxd，醒醒，别那么早就休眠了，你还有活要干
+容器：收到收到
+20分钟后
+定时唤醒任务：hxd，醒醒，别那么早就休眠了，你还有活要干
+容器：收到收到
+...
+[日志]容器运行满18小时，需要在夜间休眠6小时
+第二天
+定时唤醒任务：hxd，醒醒，该干活了
+容器：啊巴啊巴啊巴啊巴啊巴.....(休眠中)
+20分钟后
+定时唤醒任务：hxd，醒醒，该干活了
+容器：啊巴啊巴啊巴啊巴啊巴.....(休眠中)
+...
+当有外部请求时
+容器：嗯，有外部请求了？好了我醒了
+20分钟后
+定时唤醒任务：hxd，醒醒，别那么早就休眠了，你还有活要干
+容器：Yes♂Sir
+...
+</pre>
+</details>
+<p>现在我们不能通过定时任务唤醒休眠的容器了，但还能唤醒正在运行的容器来延长运行时间</p>
+<p>于是我又去网上找了各种方法，找到了一个我认为最好的解决方案</p>
+<h2 id="解决方案">解决方案<a title="#解决方案" href="#解决方案"></a></h2>
+<p>虽然现在Leancloud不能通过内部请求来唤醒容器，那我们还能通过外部请求嘛</p>
+<h3 id="github-actions">Github Actions<a title="#github-actions" href="#github-actions"></a></h3>
+<p>打开Github，进入你的个人设置(Settings)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github1.png" alt="avatar" class="φcx"></p>
+<p>点击开发者设置(Developer Settings)，找到个人访问密匙(Personal access tokens)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github2.png" alt="avatar" class="φcx"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github3.png" alt="avatar" class="φcx"></p>
+<p>创建一个新的密匙(点击Generate new token)，名称为<code>GITHUB_TOKEN</code>，勾选 <code>repo</code> <code>admin:repo_hook</code> <code>workflow</code> 选项，然后生成密匙即可(点击Generate token)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github4.png" alt="avatar" class="φcx"></p>
+<p>然后我们需要Fork一个项目</p>
+<p>项目地址：<a href="https://github.com/blogimg/WakeLeanCloud" target="_blank">WakeLeanCloud</a></p>
+<p>Fork完毕后，进入项目的设置（点击Settings），找到Secrets，新建一个Secret(点击New Secret)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github5.png" alt="avatar" class="φcx"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github6.png" alt="avatar" class="φcx"></p>
+<p>名称为<code>SITE</code>，<code>Value</code>为你的博客评论系统后台管理地址，可填多个地址，用<code>,</code>分开，然后点击Add secret 添加secret</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github7.png" alt="avatar" class="φcx"></p>
+<p>然后我们可以给自己的项目点个Star(手动执行一次Actions)，然后点击Actions看看运行成功没有，如果你是第一次用Actions，那么会有一个使用提示，点击绿色的按钮即可</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github8.png" alt="avatar" class="φcx"></p>
+<p>如果Actions运行成功了，那么它看起来是这样的</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github9.png" alt="avatar" class="φcx"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github10.png" alt="avatar" class="φcx"></p>
+<p>之后它就会在每天的8点到23点里，每20分钟唤醒Leancloud容器一次啦</p>
+<p>PS：由于唤醒大约耗时2分钟，所以唤醒脚本里的cron表达式是18而不是20</p>
+<p>如果你想改时间，那么修改<code>.github/workflows/autoWakeup.yml</code>中的cron表达式即可</p>
+<p>PS：时区默认为UTC，我们的时区是UTC+8，所以你的时间需要减8个小时</p>
+<p>这里奉上一个cron表达式的生成器：<a href="https://www.beejson.com/tool/cron.html" target="_blank">Link</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/github11.png" alt="avatar" class="φcx"></p>
+<p>如果你嫌commit多太烦人，那么可以设置为外部唤醒一次，其余都交给Leancloud的定时任务来唤醒即可</p>
+<p>比如我将<code>.github/workflows/autoWakeup.yml</code>中的cron表达式改为<code>55 22 * * *</code></p>
+<p>那么它就会在每天早上6点55分唤醒Leancloud容器一次啦</p>
+<details>
+<summary>通俗易懂小剧场2</summary>
+<pre>
+外部请求多次
+外部请求(首次)：铁子，该干活了
+容器：OKOK
+20分钟后
+外部请求：老哥，还有活要干，别休眠了
+容器：OKOK
+...
+外部请求一次
+外部请求：起床干活GKD
+容器：好der
+20分钟后
+定时唤醒任务：hxd，醒醒，别那么早就休眠了，你还有活要干
+容器：收到收到
+...
+</pre>
+</details>
+<p>我用的是只发送一次外部请求的方法，这里奉上我在Leancloud定时任务中的cron表达式</p>
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.1/images/leancloud3.png" alt="avatar" class="φcx"></p>
+<p>先在早上6点55分外部请求唤醒容器，然后从7点开始23点结束，每20分钟内部唤醒容器一次，同时在7点5分补上漏发的邮件，这样也能达到延长容器运行时间的目的</p>
+<h2 id="后记">后记<a title="#后记" href="#后记"></a></h2>
+<p>其实还有其他方案的，不过我认为这个方案是最好的，有空再写其他的</p>
+<p>看着满屏的<code>self_wake</code>函数运行成功，心里真TM爽</p>
+<p>最后感谢<a href="https://www.antmoe.com" target="_blank">Dreamy.TZK</a>的文章和项目</p>
+<h2 id="感谢">感谢<a title="#感谢" href="#感谢"></a></h2>
+<h3 id="部分图片">部分图片<a title="#部分图片" href="#部分图片"></a></h3>
+<ul>
+<li><a href="https://www.antmoe.com/posts/ff6aef7b/index.html" target="_blank">优雅解决Leancloud流控问题</a></li>
+</ul>
+<h3 id="文章">文章<a title="#文章" href="#文章"></a></h3>
+<ul>
+<li><a href="https://www.antmoe.com/posts/ff6aef7b/index.html" target="_blank">优雅解决Leancloud流控问题</a></li>
+</ul>
+<h3 id="项目">项目<a title="#项目" href="#项目"></a></h3>
+<ul>
+<li><a href="https://github.com/blogimg/WakeLeanCloud" target="_blank">WakeLeanCloud</a></li>
+</ul>
+<p>文章更新日期：2020.6.21 18:40</p>
+]]></content>
+      <categories>
+        <category>开发</category>
+      </categories>
+      <tags>
+        <tag>Leancloud</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Inside主题进阶配置 | 附加篇</title>
+    <url>/posts/inside-configuration-extra/</url>
+    <content><![CDATA[<h2 id="前言">前言<a title="#前言" href="#前言"></a></h2>
+<p>这是上一篇文章的续篇，用于介绍一些我给主题做的拓展功能</p>
+<p><strong>注意：本文中的代码均不是死的，需要根据你的情况自己修改</strong></p>
+<p><strong>阅读这篇文章，你可能需要一定的知识储备：</strong></p>
+<ol>
+<li>HTML基础</li>
+<li>JavaScript基础</li>
+<li>CSS基础</li>
+</ol>
+<p>不用害怕，因为我也是菜逼～</p>
+<a id="more"></a>
+<h2 id="自定义函数">自定义函数<a title="#自定义函数" href="#自定义函数"></a></h2>
+<p>博客的自定义资源均由<code>scriptLoader-xxxx.js</code>进行加载</p>
+<p>而<code>scriptLoader.js</code>的作用就是保证我自定义的，需要全局使用的函数能被预先加载，从而继续在指定种类的页面加载指定资源</p>
+<p>以下是我自定义的一些函数，在这篇文章中需要用到</p>
+<figure class="highlight javascript"><figcaption><span>customFuncs.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Author: Zorin</span></span><br><span class="line"><span class="comment"> Github: https://github.com/PikaSama</span></span><br><span class="line"><span class="comment"> License: GPL-3.0 License</span></span><br><span class="line"><span class="comment"> Description: Personal functions.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// 延迟函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">delay</span>(<span class="params">ms,func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">typeof</span> func == <span class="string">&quot;function&quot;</span>)&#123;</span><br><span class="line">                func();</span><br><span class="line">            &#125;</span><br><span class="line">            resolve();</span><br><span class="line">        &#125;,ms);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 动态文字，简化版</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dynamicType</span>(<span class="params">arr,ts,bs</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> options = &#123;</span><br><span class="line">        strings: arr,</span><br><span class="line">        startDelay: <span class="number">0</span>,</span><br><span class="line">        backDelay: <span class="number">1000</span>,</span><br><span class="line">        typeSpeed: ts || <span class="number">80</span>,</span><br><span class="line">        backSpeed: bs || <span class="number">60</span>,</span><br><span class="line">        loop: <span class="literal">true</span>,</span><br><span class="line">        showCursor: <span class="literal">true</span>,</span><br><span class="line">        contentType: <span class="string">&#x27;html&#x27;</span>,</span><br><span class="line">        smartBackspace: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> type = <span class="keyword">new</span> Typed(<span class="string">&quot;#typedtext&quot;</span>,options);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 通知系统，简化版</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">customNtf</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> myntf = <span class="keyword">new</span> NotificationFx(&#123;</span><br><span class="line">        wrapper: <span class="built_in">document</span>.body,</span><br><span class="line">        message: options.text,</span><br><span class="line">        layout: options.layout,</span><br><span class="line">        effect: options.effect,</span><br><span class="line">        type: <span class="string">&#x27;error&#x27;</span>,</span><br><span class="line">        ttl: options.ttl,</span><br><span class="line">        onClose : <span class="function">() =&gt;</span> <span class="literal">false</span>,</span><br><span class="line">        onOpen : <span class="function">() =&gt;</span> <span class="literal">false</span></span><br><span class="line">    &#125;);</span><br><span class="line">    myntf.show();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 公告通知</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">announce</span>(<span class="params">css,ver,lc,ld</span>) </span>&#123;</span><br><span class="line">    css.append(<span class="string">&#x27;&lt;link id=&quot;jelly&quot; href=&quot;//cdn.jsdelivr.net/gh/PikaSama/shelter-images@&#x27;</span> + ver + <span class="string">&#x27;/static/ns-style-growl.css&quot; rel=&quot;stylesheet&quot;&gt;&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">1000</span>);</span><br><span class="line">    customNtf(&#123;</span><br><span class="line">        text: <span class="string">&#x27;&lt;p&gt;🔔【公告】——2020.8.3&lt;br /&gt;叮咚！博客有文章更新啦~&lt;br /&gt;更新列表：&lt;br /&gt;&lt;a href=&quot;/posts/inside-configuration&quot;&gt;[持续更新]Inside主题进阶配置&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;快去看看吧~&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;a id=&quot;confirm&quot; href=&quot;&#x27;</span> + lc + <span class="string">&#x27;#cofirmed&quot;&gt;确认公告&lt;/a&gt;&lt;/p&gt;&#x27;</span>,</span><br><span class="line">        layout: <span class="string">&#x27;growl&#x27;</span>,</span><br><span class="line">        effect: <span class="string">&#x27;jelly&#x27;</span>,</span><br><span class="line">        ttl: <span class="number">10000</span></span><br><span class="line">    &#125;);</span><br><span class="line">    confirmAnnounce(ld);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 确认公告按钮</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">confirmAnnounce</span>(<span class="params">ld</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 监听按钮点击事件</span></span><br><span class="line">    $(<span class="string">&quot;a#confirm&quot;</span>).click(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 关闭公告通知</span></span><br><span class="line">        $(<span class="string">&quot;.ns-box.ns-growl.ns-effect-jelly.ns-type-error.ns-show .ns-close&quot;</span>).click();</span><br><span class="line">        <span class="comment">// 写入已读日期</span></span><br><span class="line">        <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;announcement_date&quot;</span>, ld);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 新人查阅指南后的通知</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">checkedNotification</span>(<span class="params">css,ver</span>) </span>&#123;</span><br><span class="line">    css.append(<span class="string">&#x27;&lt;link id=&quot;jelly&quot; href=&quot;//cdn.jsdelivr.net/gh/PikaSama/shelter-images@&#x27;</span> + ver + <span class="string">&#x27;/static/ns-style-growl.css&quot; rel=&quot;stylesheet&quot;&gt;&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">1600</span>);</span><br><span class="line">    customNtf(&#123;</span><br><span class="line">        text: <span class="string">&#x27;&lt;p&gt;🔔【消息】&lt;br /&gt;恭喜～你已经正式进入了避难所(Shelter)～&lt;br /&gt;页面将在5秒后跳转至首页，请耐心等待～&lt;br /&gt;无法跳转？试试&amp;nbsp;&amp;nbsp;&lt;a href=&quot;/&quot;&gt;手动跳转&lt;/a&gt;&lt;/p&gt;&#x27;</span>,</span><br><span class="line">        layout: <span class="string">&#x27;growl&#x27;</span>,</span><br><span class="line">        effect: <span class="string">&#x27;jelly&#x27;</span>,</span><br><span class="line">        ttl: <span class="number">5500</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">5000</span>);</span><br><span class="line">    <span class="built_in">window</span>.location.href=<span class="string">&quot;/&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="通知系统">通知系统<a title="#通知系统" href="#通知系统"></a></h2>
+<p>这个我是在一个约5年前的css+js项目里看到的(难以想象5年前的项目竟然这么好康)</p>
+<p>项目地址：<a href="http://tympanus.net/Development/NotificationStyles/index.html" target="_blank">NotificationStyles</a></p>
+<!--more-->
+<p><img src="https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.16/images/ns-preview.png" alt="avatar" class="φcx"></p>
+<p>图片预览</p>
+<p>有很多种通知样式可以选，但使用多个通知可能会造成样式的冲突。</p>
+<p>如果你发现使用多个通知会有冲突，请只引用<code>ns-default.css</code>这个样式文件，在要用到指定通知时才加载指定的样式文件。（目前暂未找到同时显示的最优解决方案，这个方法是用于解决错开显示不同种类通知造成的样式冲突）</p>
+<p>使用通知系统，需要加入以下依赖</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.15/static/ns-default.css</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.15/static/NotificationFx.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.14/static/modernizr.custom.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.14/static/classie.js</span></span><br></pre></td></tr></table></figure>
+<p>用法(简化后的)：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">customNtf(&#123;</span><br><span class="line">    text: &#39;Hello~&#39;,</span><br><span class="line">    layout: &#39;other&#39;,</span><br><span class="line">    effect: &#39;thumbslider&#39;,</span><br><span class="line">    ttl: 1000</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>text：通知内容</li>
+<li>layout：通知样式种类</li>
+<li>effect：样式效果</li>
+<li>ttl：通知持续时间</li>
+</ul>
+<p>上面代码的样式就是新人通知的样式，普通通知、公告的样式是<code>growl</code>样式中的<code>jelly</code>特效。</p>
+<p>如果文本内容过长或其他原因造成通知显示不够标准，需要自行修改css</p>
+<h3 id="新人通知">新人通知<a title="#新人通知" href="#新人通知"></a></h3>
+<p>受主题群里一位大佬的启发，本来想做个新人引导的，但是找不到什么好看的样式，而且我个人也比较反感这种“被人教做事”或者说是“被强迫做事”的感觉，于是发现了通知系统之后就想着给新人发个通知行了，看不看入站指南是他们的意愿hhh</p>
+<p>识别新人的原理就是判断客户端有没有标识符，没有就推送通知，以前用的是Cookie方式，现在改为localStorage方式。（但这玩意的性能好像略低于前者）</p>
+<p>代码分为两个文件：</p>
+<ul>
+<li>ntfSystem.js：用于显示新人通知和公告</li>
+<li>ntfSystem-page.js：用于显示阅读指南后的通知(包含后文的自定义配置方面的代码)</li>
+</ul>
+<h3 id="公告">公告<a title="#公告" href="#公告"></a></h3>
+<p>同上，公告的判断方式为：浏览者的已读日期不存在或不等于最新的公告日期，且不是新人，显示公告</p>
+<p>存储方式也是localStorage(后面的都是，只要涉及到数据的长期存储)</p>
+<p><strong>注意：该功能仅对非新人开放，要是新人看得到这通知，那不得眼花缭乱了～</strong></p>
+<p>代码过长，可通过toc按钮（右下角小圆点，展开的三条杠按钮）跳转至下一个标题</p>
+<figure class="highlight javascript"><figcaption><span>ntfSystem.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Author: Zorin</span></span><br><span class="line"><span class="comment"> Github: https://github.com/PikaSama</span></span><br><span class="line"><span class="comment"> License: GPL-3.0 License</span></span><br><span class="line"><span class="comment"> Description: Notification system, including notification for newbie and annoucement features.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">1000</span>);</span><br><span class="line">    <span class="comment">// 新人标识</span></span><br><span class="line">    <span class="keyword">const</span> newv = <span class="built_in">localStorage</span>.getItem(<span class="string">&quot;newbie&quot;</span>);</span><br><span class="line">    <span class="comment">// 页面路径</span></span><br><span class="line">    <span class="keyword">const</span> lc = <span class="built_in">window</span>.location.pathname;</span><br><span class="line">    <span class="comment">// 已读公告日期</span></span><br><span class="line">    <span class="keyword">const</span> ad = <span class="built_in">localStorage</span>.getItem(<span class="string">&quot;announcement_date&quot;</span>);</span><br><span class="line">    <span class="comment">// 最新公告日期</span></span><br><span class="line">    <span class="keyword">const</span> ld = <span class="string">&quot;2020.8.3&quot;</span>;</span><br><span class="line">    <span class="comment">// 静态资源版本</span></span><br><span class="line">    <span class="keyword">const</span> ver = <span class="string">&quot;1.3.12&quot;</span>;</span><br><span class="line">    <span class="keyword">const</span> cssPlace = $(<span class="string">&quot;head&quot;</span>);</span><br><span class="line">    <span class="comment">// 新人通知</span></span><br><span class="line">    <span class="keyword">const</span> newbientf = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">        cssPlace.append(<span class="string">&#x27;&lt;link id=&quot;thumbslider&quot; href=&quot;//cdn.jsdelivr.net/gh/PikaSama/shelter-images@&#x27;</span> + ver + <span class="string">&#x27;/static/ns-style-other.css&quot; rel=&quot;stylesheet&quot;&gt;&#x27;</span>);</span><br><span class="line">        <span class="keyword">await</span> delay(<span class="number">1000</span>);</span><br><span class="line">        customNtf(&#123;</span><br><span class="line">            text: <span class="string">&#x27;&lt;div class=&quot;ns-thumb&quot;&gt;&lt;img height=&quot;72px&quot; width=&quot;72px&quot; src=&quot;https://cdn.jsdelivr.net/gh/PikaSama/shelter-images@1.3.4/images/icon.png&quot;/&gt;&lt;/div&gt;&lt;div style=&quot;width:280px;&quot; class=&quot;ns-content&quot;&gt;&lt;p&gt;第一次访问博客？来看看&lt;a style=&quot;color:#1eb4f0;&quot; href=&quot;https://shelter.beaa.cn/help&quot;&gt;使用教程&lt;/a&gt;&amp;nbsp;叭~&lt;br /&gt;移动端请点击右下角的圆点打开侧边栏“&lt;span class=&quot;φbg icon-sidebar&quot;&gt;&lt;/span&gt;”&lt;br /&gt;(浏览后即可永久关闭此通知)&lt;/p&gt;&lt;/div&gt;&#x27;</span>,</span><br><span class="line">            layout: <span class="string">&#x27;other&#x27;</span>,</span><br><span class="line">            effect: <span class="string">&#x27;thumbslider&#x27;</span>,</span><br><span class="line">            ttl: <span class="number">10000</span></span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// 修改通知长度</span></span><br><span class="line">        <span class="keyword">await</span> delay(<span class="number">600</span>);</span><br><span class="line">        $(<span class="string">&quot;.ns-box.ns-other.ns-effect-thumbslider.ns-type-error .ns-box-inner&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;width:340px;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 显示新人通知</span></span><br><span class="line">    <span class="keyword">if</span> (newv == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">await</span> newbientf();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 判断条件，显示公告</span></span><br><span class="line">        <span class="keyword">if</span> ((ad == <span class="literal">null</span> || ad != ld) &amp;&amp; newv != <span class="literal">null</span>) &#123;</span><br><span class="line">            announce(cssPlace,ver,lc,ld);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><figcaption><span>ntfSystem-page.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Author: Zorin</span></span><br><span class="line"><span class="comment"> Github: https://github.com/PikaSama</span></span><br><span class="line"><span class="comment"> License: GPL-3.0 License</span></span><br><span class="line"><span class="comment"> Description: An extension of ntfSystem.js.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">1000</span>);</span><br><span class="line">    <span class="comment">// 新人标识</span></span><br><span class="line">    <span class="keyword">let</span> neo = <span class="built_in">localStorage</span>.getItem(<span class="string">&quot;newbie&quot;</span>);</span><br><span class="line">    <span class="comment">// 页面路径</span></span><br><span class="line">    <span class="keyword">const</span> locate = <span class="built_in">window</span>.location.pathname;</span><br><span class="line">    <span class="keyword">const</span> cssPlace = $(<span class="string">&quot;head&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> thumbslider = <span class="string">&quot;.ns-box.ns-other.ns-effect-thumbslider.ns-type-error&quot;</span>;</span><br><span class="line">    <span class="comment">// 静态资源文件版本</span></span><br><span class="line">    <span class="keyword">const</span> ver = <span class="string">&quot;1.3.12&quot;</span>;</span><br><span class="line">    <span class="comment">// 初始配置</span></span><br><span class="line">    <span class="keyword">let</span> autoNight = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> defaultTheme = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> defaultWidget = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> sidebarBackground = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> clickEffect = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> live2d = <span class="string">&quot;1&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> wordcountMode = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> bqb = <span class="string">&quot;https://cdn.jsdelivr.net/npm/alus@latest\nhttps://cdn.jsdelivr.net/gh/MiniValine/Bilibilis@latest\nhttps://cdn.jsdelivr.net/gh/MiniValine/twemoji@latest\nhttps://cdn.jsdelivr.net/gh/PikaSama/blog-emoticons@1.1.2/bilibiliHotKey\nhttps://cdn.jsdelivr.net/gh/PikaSama/blog-emoticons@1.1.2/HONKAI3-Daily\nhttps://cdn.jsdelivr.net/gh/PikaSama/blog-emoticons@1.1.2/HONKAI3-NEWYEAR-2019\nhttps://cdn.jsdelivr.net/gh/PikaSama/blog-emoticons@1.1.2/HONKAI3-AIChan\nhttps://cdn.jsdelivr.net/gh/PikaSama/blog-emoticons@1.1.2/Coolapk&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> dynamicText = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="comment">// 检查是否有通知阻塞</span></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">checkedNtf</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">document</span>.querySelector(thumbslider + <span class="string">&quot;.ns-show&quot;</span>) != <span class="literal">null</span>) &#123;</span><br><span class="line">            $(thumbslider).attr(<span class="string">&quot;id&quot;</span>,<span class="string">&quot;canceled&quot;</span>);</span><br><span class="line">            <span class="keyword">await</span> delay(<span class="number">500</span>);</span><br><span class="line">            $(thumbslider).remove();</span><br><span class="line">            $(<span class="string">&quot;link#thumbslider&quot;</span>).remove();</span><br><span class="line">            <span class="keyword">await</span> checkedNotification(cssPlace,ver);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            $(thumbslider).remove();</span><br><span class="line">            $(<span class="string">&quot;link#thumbslider&quot;</span>).remove();</span><br><span class="line">            <span class="keyword">await</span> checkedNotification(cssPlace,ver);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 新人，在入站指南页面</span></span><br><span class="line">    <span class="comment">// 写入标识符与默认配置文件</span></span><br><span class="line">    <span class="keyword">if</span> (neo == <span class="literal">null</span> &amp;&amp; locate == <span class="string">&quot;/help&quot;</span>) &#123;</span><br><span class="line">        $(<span class="string">&#x27;&lt;div class=&quot;button-save&quot;&gt;&lt;span&gt;已阅&lt;i class=&quot;ri-checkbox-circle-line&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;&#x27;</span>).insertAfter(<span class="string">&quot;.φbk.φh.φz p:last&quot;</span>);</span><br><span class="line">        $(<span class="string">&quot;.button-save&quot;</span>).click(<span class="keyword">async</span> ()=&gt;&#123;</span><br><span class="line">            $(<span class="string">&quot;.button-save&quot;</span>).attr(<span class="string">&quot;class&quot;</span>,<span class="string">&quot;button-save-disabled&quot;</span>);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;newbie&quot;</span>,<span class="string">&quot;0&quot;</span>);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;auto_night&quot;</span>,autoNight);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;default_theme&quot;</span>,defaultTheme);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;default_theme_widget&quot;</span>,defaultWidget);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;sidebar_widget_background&quot;</span>,sidebarBackground);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;click_effect&quot;</span>,clickEffect);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;live2d&quot;</span>,live2d);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;wordcount_mode&quot;</span>,wordcountMode);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;bqb_url&quot;</span>,bqb);</span><br><span class="line">            <span class="built_in">localStorage</span>.setItem(<span class="string">&quot;dynamic_text&quot;</span>,dynamicText);</span><br><span class="line">            <span class="keyword">await</span> delay(<span class="number">600</span>,checkedNtf);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<h3 id="思考">思考<a title="#思考" href="#思考"></a></h3>
+<p>看到这里，你可能会发现：你这tm怎么都用的异步自执行函数啊？！</p>
+<p>是的，由于大部分代码需要延迟执行，但我又不想看到<code>setTimeout()</code>函数的瀑布流式代码，所以接触了一下异步的知识，用Promise + async/await 实现异步执行同步代码般的操作，这也是为什么我需要在文章前面先放一下我自定义的函数。</p>
+<p><code>setTimeout()</code>函数是一个定时器，可以达到延迟执行的效果，但因为是计时器，这玩意是一个像异步又不像异步的东西。为此我稍稍了解了一下js的运行机制，js解析到setTimeout()函数后会将里面的代码放入任务队列(task queue)，所有同步代码执行完后，系统会读取任务队列，看看定时器是否满足时间要求（康康到点没），满足就执行里面的代码，不满足就重复下去，这一循环成为事件循环。（event loop）</p>
+<p>所以要想靠<code>setTimeout()</code>函数延迟执行同步代码，就得写成这样</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;1 sec later.&quot;</span>);</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&quot;2 secs later.&quot;</span>);</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&quot;3 secs later.&quot;</span>);</span><br><span class="line">            ...</span><br><span class="line">        &#125;,<span class="number">1000</span>);</span><br><span class="line">    &#125;,<span class="number">1000</span>);</span><br><span class="line">&#125;,<span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<p>这样的方式，我不能接受！</p>
+<p>如果你想深入了解js的运行机制，具体可见此文：</p>
+<p><a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html" target="_blank">JavaScript 运行机制详解：再谈Event Loop</a></p>
+<h2 id="设置系统">设置系统<a title="#设置系统" href="#设置系统"></a></h2>
+<p>每次浏览博客的时候，都得切换一下主题，因为刷新一下就莫得了。</p>
+<p>每次浏览博客的时候，点击特效，看板娘，字数统计，动态文字都tm是我主观设置出来的，很难迎合大众口味，这么死的设置，过不久我自己都要玩腻了。</p>
+<p>所以，设置系统横空出世（虽然有些花里胡哨的主题早就自带了，样式也比我好看多了，哈哈，哈哈哈，哈哈哈哈哈呜呜呜呜）</p>
+<p>这是个啥？顾名思义，就是让用户能够自定义配置文件，达到自己喜欢的浏览效果。</p>
+<p><strong>注意：该功能仅对非新人开放～</strong></p>
+<p>目前支持的设置：</p>
+<ul>
+<li>黑暗模式自动切换</li>
+<li>默认主题</li>
+<li>默认强调色</li>
+<li>侧边栏背景</li>
+<li>点击特效</li>
+<li>Live2d看板娘</li>
+<li>字数统计模式</li>
+<li>评论系统自定义表情包</li>
+<li>动态文字样式</li>
+</ul>
+<p>不过就我目前的能力来讲，涉及到调色盘的功能都是通过模拟点击事件实现的，所以你一开始浏览博客的0.x秒前都还是默认主题的。</p>
+<p>Inside主题的调色盘功能用了<code>Shadow DOM</code>来封装，所以我们才可以直接用<code>&lt;is-palette2&gt;&lt;/is-palette2&gt;</code>就能弄出调色盘</p>
+<p>不过调色盘的ShadowRoot模式设置成<code>closed</code>了，外界不能对里面进行DOM操作（不能访问）</p>
+<p>所以要在<code>themes.js</code>中把<code>attachShadow(&#123;mode:&quot;closed&quot;&#125;)</code>改为<code>attachShadow(&#123;mode:&quot;open&quot;&#125;)</code>，这样就能模拟点击事件了</p>
+<p>为了实现这个功能，代码分为以下部分</p>
+<ul>
+<li>cfg-Loader.js：用于加载用户的自定义配置</li>
+<li>cfg-Setter.js：设置页面所用到的，用于读写自定义配置</li>
+<li>cfg-Counter.js：用于加载用户对统计功能的自定义配置</li>
+<li>cfg-Minivaline.js：用于加载用户对评论表情包的自定义配置</li>
+</ul>
+<p>源码…有点长，还是放地址吧</p>
+<p><a href="https://cdn.jsdelivr.net/gh/pikasama/shelter-static@1/js/custom" target="_blank">shelter-static/js/custom/ - PikaSama</a></p>
+<h3 id="加载动画">加载动画<a title="#加载动画" href="#加载动画"></a></h3>
+<p>跳转都设置页面时，会有几秒的加载动画</p>
+<p>这是用一位大佬的css项目实现的：<a href="https://www.cnblogs.com/henrylin/p/13124866.html" target="_blank">Win10加载动画CSS</a></p>
+<p>实现原理：设置文章页面透明度为0，约2秒后插入设置界面的内容，约1秒后设置加载动画透明度为0并删除加载动画的元素，设置文章页面透明度为1，然后再删除它的style属性（也就是说加载动画就是个幌子，让你觉得好看而已）</p>
+<h2 id="js压缩">JS压缩<a title="#js压缩" href="#js压缩"></a></h2>
+<p>为了提升访问速度，需要对js进行压缩，这里我用的是<code>terser</code></p>
+<p>安装（全局）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install -g terser</span><br></pre></td></tr></table></figure>
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">terser file.js -c -m -o file.min.js --comments &quot;&#x2F;Zorin&#x2F;&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-c：压缩参数</li>
+<li>-m：简化变量名</li>
+<li>-o：输出路径</li>
+<li>–comments：需要保留的注释中的内容</li>
+</ul>
+<p>压缩出来的js都以 源文件名.min.js 为名</p>
+<p>如果要实现压缩当前目录下的所有js，可以写个shell脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">rm *.min.js</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> *.js</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  terser <span class="variable">$i</span> -c -m -o <span class="variable">$&#123;i%.js&#125;</span>.min.js --comments <span class="string">&quot;/Zorin/&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h2 id="侧边栏">侧边栏<a title="#侧边栏" href="#侧边栏"></a></h2>
+<h3 id="简化">简化<a title="#简化" href="#简化"></a></h3>
+<p>博客的侧边栏有很多选项，但其实这挺碍眼的，所以弄了个“More”更多选项，写了个简单的淡入淡出动画，看着还行</p>
+<h3 id="访问统计">访问统计<a title="#访问统计" href="#访问统计"></a></h3>
+<p>由于我给文章也加了访问统计，所以侧边栏的访问统计需要在非文章的页面才能加载（防止冲突，如果访问的是文章，那么文章里加载的卜算子统计也会补全侧边栏的访问统计）</p>
+<p>两者集成为一个文件<code>sidebar.js</code></p>
+<figure class="highlight javascript"><figcaption><span>sidebar.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Author: Zorin</span></span><br><span class="line"><span class="comment"> Github: https://github.com/PikaSama</span></span><br><span class="line"><span class="comment"> License: GPL-3.0 License</span></span><br><span class="line"><span class="comment"> Description: A lightweight more-options button.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">(<span class="keyword">async</span> ()=&gt;&#123;</span><br><span class="line">    <span class="keyword">await</span> delay(<span class="number">800</span>);</span><br><span class="line">    <span class="keyword">const</span> more = <span class="string">&quot;.φeo.φbd.φj.φc.φu.φo&quot;</span>;</span><br><span class="line">    <span class="keyword">const</span> path = <span class="built_in">window</span>.location.pathname.slice(<span class="number">0</span>,<span class="number">6</span>);</span><br><span class="line">    <span class="keyword">let</span> mode = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (path != <span class="string">&quot;/posts&quot;</span>) &#123;</span><br><span class="line">        $(<span class="string">&quot;body&quot;</span>).append(<span class="string">&#x27;&lt;script src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    $(<span class="string">&#x27;&lt;a class=&quot;φeo φbd φj φc φu φo&quot;&gt;📥 More&lt;/a&gt;&#x27;</span>).insertAfter(more + <span class="string">&quot;:eq(3)&quot;</span>);</span><br><span class="line">    $(<span class="string">&#x27;&lt;a class=&quot;φeo φbd φj φc φu φo&quot; style=&quot;display:none;&quot; href=&quot;/abyss&quot;&gt;🖤 Abyss&lt;/a&gt;&#x27;</span>).insertAfter(more + <span class="string">&quot;:eq(4)&quot;</span>);</span><br><span class="line">    $(<span class="string">&#x27;&lt;a class=&quot;φeo φbd φj φc φu φo&quot; style=&quot;display:none;&quot; href=&quot;/todo&quot;&gt;📃 Todo&lt;/a&gt;&#x27;</span>).insertAfter(more + <span class="string">&quot;:eq(5)&quot;</span>);</span><br><span class="line">    $(<span class="string">&#x27;&lt;a class=&quot;φeo φbd φj φc φu φo&quot; style=&quot;display:none;&quot; href=&quot;/search&quot;&gt;🔎 Search&lt;/a&gt;&#x27;</span>).insertAfter(more + <span class="string">&quot;:eq(6)&quot;</span>);</span><br><span class="line">    $(more + <span class="string">&quot;:eq(4)&quot;</span>).click(<span class="keyword">async</span> ()=&gt;&#123;</span><br><span class="line">        <span class="keyword">if</span> (mode == <span class="number">0</span>) &#123;</span><br><span class="line">            mode = <span class="number">1</span>;</span><br><span class="line">            $(more + <span class="string">&quot;:eq(5)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(6)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(7)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;&quot;</span>);</span><br><span class="line">            <span class="keyword">await</span> delay(<span class="number">200</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(5)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:1;transition:all 0.5s&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(6)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:1;transition:all 0.5s&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(7)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:1;transition:all 0.5s&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            mode = <span class="number">0</span>;</span><br><span class="line">            $(more + <span class="string">&quot;:eq(5)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;transition:all 0.5s&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(6)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;transition:all 0.5s&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(7)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;opacity:0;transition:all 0.5s&quot;</span>);</span><br><span class="line">            <span class="keyword">await</span> delay(<span class="number">600</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(5)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;display:none;&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(6)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;display:none;&quot;</span>);</span><br><span class="line">            $(more + <span class="string">&quot;:eq(7)&quot;</span>).attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;display:none;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<h2 id="后记">后记<a title="#后记" href="#后记"></a></h2>
+<p>文章太短啦！</p>
+<p>是的，后续会更新的（flag+1）</p>
+<p>其实大部分内容都能在js里的注释找到，又因为我没什么时间，然后就不写了hhhh</p>
+<h2 id="感谢">感谢<a title="#感谢" href="#感谢"></a></h2>
+<p>项目：<a href="http://tympanus.net/Development/NotificationStyles/index.html" target="_blank">NotificationStyles</a></p>
+<p>文章更新日期：2020.10.11 14:07</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>[持续更新]Inside主题进阶配置</title>
+    <url>/posts/inside-configuration/</url>
+    <content><![CDATA[<h2 id="前言">前言<a title="#前言" href="#前言"></a></h2>
+<p><em><strong>test</strong></em></p>
+<p>在经过两天的本地测试，以及后续的各种修修补补，博客已经正式换为<a href="https://github.com/ikeq/hexo-theme-inside" target="_blank">Inside</a>主题</p>
+<p>Inside主题是一个简洁，美观，开放的主题，虽然主题内置的功能并不多，但主题提供了强大的<a href="https://blog.oniuo.com/theme-inside/docs/misc#plugins" target="_blank">插件</a>功能，可在配置中添加自己想要的文件（js脚本，css样式文件等），可自定义性强</p>
+<a id="more"></a>
+<p><strong>注：本文涉及内容仅为Inside主题的插件配置，</strong> 基础配置请见<a href="https://blog.oniuo.com/theme-inside/" target="_blank">官方文档</a>(懒得写了hhh)</p>
+<h2 id="准备">准备<a title="#准备" href="#准备"></a></h2>
+<p>首先主题配置文件里的Plugins项长这样</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="comment"># 动态插入可执行的代码片段</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="comment"># `sidebar` | `post` | `page` | `comments` | `avatar`, 支持数组</span></span><br><span class="line">    <span class="comment"># HTML 片段</span></span><br><span class="line">    <span class="attr">template:</span></span><br><span class="line">    <span class="comment"># 也可以是相对于主题根目录的路径，例如：</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">snippets/template-1.html</span></span><br><span class="line">  <span class="comment"># 全局加载脚本/样式</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">xxx.css</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">xxx.js</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 更灵活的用法</span></span><br><span class="line">  <span class="comment"># &lt;script src=&quot;//sample.com/api.php?format=jsonp&quot; id=&quot;sample-api&quot; defer&gt;&lt;/script&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">tag:</span> <span class="string">script</span> <span class="comment"># html 标签, `script` | `style` | `link`</span></span><br><span class="line">    <span class="comment"># Any possible attributes</span></span><br><span class="line">    <span class="attr">src:</span> <span class="string">//sample.com/api.php?format=jsonp</span></span><br><span class="line">    <span class="attr">id:</span> <span class="string">sample-api</span></span><br><span class="line">    <span class="attr">defer:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># &lt;link rel=&quot;stylesheet&quot; href=&quot;xxx.css&quot; disable&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">tag:</span> <span class="string">link</span></span><br><span class="line">    <span class="attr">href:</span> <span class="string">xxx.css</span></span><br><span class="line">    <span class="attr">disable:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 内联脚本需指定 code</span></span><br><span class="line">  <span class="comment"># &lt;script type=&quot;text/x-mathjax-config&quot;&gt;MathJax.Hub.Config(&#123;...&#125;)&lt;/script&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">tag:</span> <span class="string">script</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">text/x-mathjax-config</span></span><br><span class="line">    <span class="attr">code:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">MathJax.Hub.Config(&#123;</span></span><br><span class="line">          <span class="attr">showProcessingMessages:</span> <span class="literal">false</span><span class="string">,</span></span><br><span class="line">          <span class="attr">messageStyle:</span> <span class="string">&#x27;none&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">tex2jax:</span> &#123; <span class="attr">inlineMath:</span> [[<span class="string">&#x27;s;,&#x27;</span><span class="string">s;</span>], [<span class="string">&#x27;\\(&#x27;</span>,<span class="string">&#x27;\\)&#x27;</span>]] &#125;</span><br><span class="line">        <span class="string">&#125;)</span></span><br><span class="line">    <span class="comment"># 也可以是相对于主题根目录的路径，例如：</span></span><br><span class="line">    <span class="attr">code:</span> <span class="string">snippets/mathjax-config.js</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 内联样式</span></span><br><span class="line">  <span class="comment"># &lt;style&gt;.mycss&#123;...&#125;&lt;/style&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">tag:</span> <span class="string">style</span></span><br><span class="line">    <span class="attr">code:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">.mycss</span> &#123;</span><br><span class="line">          <span class="attr">color:</span> <span class="string">rebeccapurple;</span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="comment"># 也可以是相对于主题根目录的路径，例如：</span></span><br><span class="line">    <span class="attr">code:</span> <span class="string">snippets/mycss.css</span></span><br></pre></td></tr></table></figure>
+<p>如果有文件需要全局引入，也就是说你点博客的哪个地方都会加载的文件</p>
+<p>只需要在plugins下加上文件的路径即可</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//yourdomain.com/js/xxx.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//yourdomain.com/css/xxx.css</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">...</span></span><br></pre></td></tr></table></figure>
+<p>如果你要在指定的地方加载文件，则需要这样写</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">inject_place</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">    <span class="string">&lt;script</span> <span class="string">src=&quot;//yourdomain.com/js/xxx.js&quot;&gt;&lt;/script&gt;</span></span><br><span class="line">    <span class="string">&lt;link</span> <span class="string">rel=&quot;stylesheet&quot;</span> <span class="string">type=&quot;text/css&quot;</span> <span class="string">href=&quot;//youdomain.com/css/xxx.css&quot;/&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>position：插入文件的位置，即你想让文件加载的位置，有五个位置
+<ul>
+<li>sidebar：主题侧边栏下方</li>
+<li>avatar：侧边栏个人头像</li>
+<li>post：文章底部</li>
+<li>page：页面底部</li>
+<li>comments：评论，即<code>page</code>和<code>post</code>最下方</li>
+</ul>
+</li>
+<li>template：HTML代码片段</li>
+</ul>
+<h3 id="代码压缩">代码压缩<a title="#代码压缩" href="#代码压缩"></a></h3>
+<p>Inside主题支持通过安装 html-minifier，babel 和 terser 来实现代码压缩<br>
+若要使用此功能，请于Hexo根目录执行命令(非themes/inside/目录)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install babel-core babel-preset-env html-minifier terser --save</span><br></pre></td></tr></table></figure>
+<h3 id="前置文件">前置文件<a title="#前置文件" href="#前置文件"></a></h3>
+<p>本文中的配置需要提前引入以下文件(全局引用)</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="comment"># jquery框架</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js</span></span><br><span class="line">  <span class="comment"># Fontawsome图标&amp;字体</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css</span></span><br><span class="line">  <span class="comment"># Remixicon图标&amp;字体</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css</span></span><br></pre></td></tr></table></figure>
+<h2 id="评论系统">评论系统<a title="#评论系统" href="#评论系统"></a></h2>
+<p>目前已有很多的评论系统，国外有Gitalk，Livere，Disqus等，国内有Valine，MiniValine等</p>
+<p>我只用过Valine和MiniValine，所以只写这两个评论系统的配置方法</p>
+<h3 id="valine">Valine<a title="#valine" href="#valine"></a></h3>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn1.lncld.net/static/js/3.0.4/av-min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//unpkg.com/valine/dist/Valine.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">comments</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;sctipt&gt;</span></span><br><span class="line">        <span class="string">new</span> <span class="string">Valine(&#123;</span></span><br><span class="line">          <span class="attr">el:</span> <span class="string">&#x27;#vcomments&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">appId:</span> <span class="string">&#x27;waibiwaibi&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">appKey:</span> <span class="string">&#x27;waibibabu&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">placeholder:</span> <span class="string">&#x27;Leave a comment~&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">recordIP:</span> <span class="string">&#x27;true&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">enableQQ:</span> <span class="string">&#x27;true&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">emojiCDN:</span> <span class="string">&#x27;https://youdomain.com/pics/emojis&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">emojiMaps:</span> &#123;</span><br><span class="line">          <span class="string">&quot;1&quot;</span><span class="string">:&quot;a/1.png&quot;</span>,</span><br><span class="line">          <span class="string">&quot;2&quot;</span><span class="string">:&quot;b/2.jpg&quot;</span>,</span><br><span class="line">          <span class="string">//...</span></span><br><span class="line">          &#125;</span><br><span class="line">        <span class="string">&#125;)</span></span><br><span class="line">      <span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>appId：Leancloud应用的<code>appId</code>，必填项</p>
+</li>
+<li>
+<p>appKey：Leancloud应用的<code>appKey</code>，必填项</p>
+</li>
+<li>
+<p>placeholder：评论区域占位提示符</p>
+</li>
+<li>
+<p>recordIP：是否记录评论者IP</p>
+</li>
+<li>
+<p>enableQQ：是否启用QQ头像功能</p>
+</li>
+<li>
+<p>emojiCDN：表情包CDN</p>
+</li>
+<li>
+<p>emojiMaps：表情包列表</p>
+</li>
+</ul>
+<p>自定义表情请见Valine官方文档：<a href="https://valine.js.org/emoji.html" target="_blank">自定义表情</a></p>
+<h3 id="minivaline">MiniValine<a title="#minivaline" href="#minivaline"></a></h3>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/minivaline@4/dist/MiniValine.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">comments</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;div</span> <span class="string">id=&quot;#mvcomments&quot;&gt;&lt;/div&gt;</span></span><br><span class="line">      <span class="string">&lt;script&gt;</span></span><br><span class="line">        <span class="string">new</span> <span class="string">MiniValine(&#123;</span></span><br><span class="line">          <span class="attr">el:</span> <span class="string">&#x27;#mvcomments&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">appId:</span> <span class="string">&#x27;114514114514&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">appKey:</span> <span class="string">&#x27;19198101919810&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">placeholder:</span> <span class="string">&#x27;Leave a comment~&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">adminEmailMd5:</span> <span class="string">&#x27;eNCRyPTmEIfUcAN&#x27;</span><span class="string">,</span></span><br><span class="line">          <span class="attr">emoticonUrl:</span> [</span><br><span class="line">            <span class="string">&#x27;https://cdn.jsdelivr.net/npm/alus@latest&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://cdn.jsdelivr.net/gh/MiniValine/Bilibilis@latest&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://cdn.jsdelivr.net/gh/MiniValine/twemoji@latest&#x27;</span>,</span><br><span class="line">            <span class="string">//...</span></span><br><span class="line">          ]</span><br><span class="line">        <span class="string">&#125;)</span></span><br><span class="line">      <span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里我用的样式是DesetsP版，配置会与xCss版不同</p>
+<p>如果你想查看xCss版的配置，请见<a href="https://github.com/MiniValine/MiniValine#options" target="_blank">官方文档</a></p>
+<ul>
+<li>
+<p>appId：Leancloud应用的<code>appId</code>，必填项</p>
+</li>
+<li>
+<p>appKey：Leancloud应用的<code>appKey</code>，必填项</p>
+</li>
+<li>
+<p>placeholder：评论区域占位提示符</p>
+</li>
+<li>
+<p>adminEmailMd5：管理员邮箱的Md5值，使用管理员的邮箱发表评论会在头像旁有一个管理员标识</p>
+<ul>
+<li>另附上一个Md5加密网站：<a href="http://tool.chinaz.com/tools/md5.aspx" target="_blank">站长工具</a></li>
+</ul>
+</li>
+<li>
+<p>emoticonUrl：数组，表情包列表，MiniValine会解析这个目录下的index.json文件以加载表情包</p>
+</li>
+</ul>
+<p>自定义表情请见MiniValine官方文档：<a href="https://github.com/MiniValine/MiniValine/blob/master/.github/FAQ.md#how-to-customize-emoticons" target="_blank">Customize Emoticons</a></p>
+<p>我不会用Python，自己用shell写了个生成表情包列表的脚本，可传参</p>
+<p>项目地址：<a href="https://github.com/PikaSama/blog-emoticons" target="_blank">Blog-Emoticons</a>（不要问问为什么是fork，因为源项目有表情包源文件，便于我更新 <s>实际上是把适配Valine的移植到MiniValine</s>）</p>
+<p>我在使用MiniValine时会有一个小问题，评论框的显示层级过高，导致我的页面停留在评论框的时候使用搜索功能，评论框会凸显出来，于是我写了修改显示层级的代码</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> mvfix = $(<span class="string">&quot;.φbz.φh&quot;</span>);</span><br><span class="line">mvfix.attr(<span class="string">&quot;style&quot;</span>,<span class="string">&quot;z-index:0;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="访问量统计">访问量统计<a title="#访问量统计" href="#访问量统计"></a></h2>
+<p>我用的是<a href="http://busuanzi.ibruce.info/" target="_blank">不蒜子统计</a>来进行访问量统计，配置简单</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">sidebar</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;script</span> <span class="string">async</span> <span class="string">src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后在配置文件中找到<code>footer</code>项下的<code>custom</code>，加入以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">footer:</span></span><br><span class="line">  <span class="attr">custom:</span> <span class="string">&lt;span</span> <span class="string">id=&quot;busuanzi_container_site_pv&quot;&gt;PV:&lt;span</span> <span class="string">id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;/span&gt;</span> <span class="string">|</span> <span class="string">&lt;/span&gt;&lt;span</span> <span class="string">id=&quot;busuanzi_container_site_uv&quot;&gt;UV:&lt;span</span> <span class="string">id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;/span&gt;&lt;/span&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果字体小了可以给<code>span</code>标签加个属性</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;font-size:120%;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>字体大小可以自己设置，我这里是1.2倍</p>
+<p>如果你要在footer里添加其他内容，例如要在访问量统计下面加备案信息啊啥的，那就在后面加个换行符<code>&lt;br /&gt;</code>再填写内容</p>
+<h2 id="代码块复制">代码块复制<a title="#代码块复制" href="#代码块复制"></a></h2>
+<p>既然是博客，那代码复制的功能怎么少的了，于是我从之前用的主题<a href="https://gitee.com/shen-yu/hexo-theme-ayer" target="_blank">Ayer</a>中把代码块复制功能移植过来了</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">wait</span>(<span class="params">callback, seconds</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> timelag = <span class="literal">null</span>;</span><br><span class="line">    timelag = <span class="built_in">window</span>.setTimeout(callback, seconds);</span><br><span class="line">&#125;</span><br><span class="line">!<span class="function"><span class="keyword">function</span> (<span class="params">e, t, a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> initCopyCode = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="keyword">var</span> copyHtml = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">      copyHtml += <span class="string">&#x27;&lt;button class=&quot;btn-copy&quot; data-clipboard-snippet=&quot;&quot;&gt;&#x27;</span>;</span><br><span class="line">      copyHtml += <span class="string">&#x27;&lt;i class=&quot;ri-file-copy-2-line&quot;&gt;&lt;/i&gt;&lt;span&gt;COPY&lt;/span&gt;&#x27;</span>;</span><br><span class="line">      copyHtml += <span class="string">&#x27;&lt;/button&gt;&#x27;</span>;</span><br><span class="line">      $(<span class="string">&quot;.highlight .code pre&quot;</span>).before(copyHtml);</span><br><span class="line">      <span class="keyword">var</span> clipboard = <span class="keyword">new</span> ClipboardJS(<span class="string">&#x27;.btn-copy&#x27;</span>, &#123;</span><br><span class="line">        target: <span class="function"><span class="keyword">function</span>(<span class="params">trigger</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> trigger.nextElementSibling;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      clipboard.on(<span class="string">&#x27;success&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> $btn = $(e.trigger);</span><br><span class="line">        $btn.addClass(<span class="string">&#x27;copied&#x27;</span>);</span><br><span class="line">        <span class="keyword">let</span> $icon = $($btn.find(<span class="string">&#x27;i&#x27;</span>));</span><br><span class="line">        $icon.removeClass(<span class="string">&#x27;ri-file-copy-2-line&#x27;</span>);</span><br><span class="line">        $icon.addClass(<span class="string">&#x27;ri-checkbox-circle-line&#x27;</span>);</span><br><span class="line">        <span class="keyword">let</span> $span = $($btn.find(<span class="string">&#x27;span&#x27;</span>));</span><br><span class="line">        $span[<span class="number">0</span>].innerText = <span class="string">&#x27;COPIED&#x27;</span>;</span><br><span class="line">        </span><br><span class="line">        wait(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="comment">// 等待两秒钟后恢复</span></span><br><span class="line">          $icon.removeClass(<span class="string">&#x27;ri-checkbox-circle-line&#x27;</span>);</span><br><span class="line">          $icon.addClass(<span class="string">&#x27;ri-file-copy-2-line&#x27;</span>);</span><br><span class="line">          $span[<span class="number">0</span>].innerText = <span class="string">&#x27;COPY&#x27;</span>;</span><br><span class="line">        &#125;, <span class="number">2000</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">      clipboard.on(<span class="string">&#x27;error&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">        e.clearSelection();</span><br><span class="line">        <span class="keyword">let</span> $btn = $(e.trigger);</span><br><span class="line">        $btn.addClass(<span class="string">&#x27;copy-failed&#x27;</span>);</span><br><span class="line">        <span class="keyword">let</span> $icon = $($btn.find(<span class="string">&#x27;i&#x27;</span>));</span><br><span class="line">        $icon.removeClass(<span class="string">&#x27;ri-file-copy-2-line&#x27;</span>);</span><br><span class="line">        $icon.addClass(<span class="string">&#x27;ri-time-line&#x27;</span>);</span><br><span class="line">        <span class="keyword">let</span> $span = $($btn.find(<span class="string">&#x27;span&#x27;</span>));</span><br><span class="line">        $span[<span class="number">0</span>].innerText = <span class="string">&#x27;COPY FAILED&#x27;</span>;</span><br><span class="line">        </span><br><span class="line">        wait(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="comment">// 等待两秒钟后恢复</span></span><br><span class="line">          $icon.removeClass(<span class="string">&#x27;ri-time-line&#x27;</span>);</span><br><span class="line">          $icon.addClass(<span class="string">&#x27;ri-file-copy-2-line&#x27;</span>);</span><br><span class="line">          $span[<span class="number">0</span>].innerText = <span class="string">&#x27;COPY&#x27;</span>;</span><br><span class="line">        &#125;, <span class="number">2000</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    initCopyCode();</span><br><span class="line">&#125;(<span class="built_in">window</span>, <span class="built_in">document</span>);</span><br></pre></td></tr></table></figure>
+<p>在plugins项中添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-static@latest/css/clipboard.css</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">post</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">page</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;script</span> <span class="string">src=&quot;你的代码&quot;&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="字数&amp;阅读时间估计">字数&amp;阅读时间估计<a title="#字数&amp;阅读时间估计" href="#字数&amp;阅读时间估计"></a></h2>
+<p>我翻了翻<a href="https://gitee.com/shen-yu/hexo-theme-ayer" target="_blank">Ayer</a>主题的文件，发现主题的字数功能是用插件hexo-wordcount来实现的（直接解析文章源文件内容）</p>
+<p>于是我就想在这个主题里试一下，网上的方法都是在index.swig里添加内容</p>
+<p>但是Inside主题的index.swig文件我是真的看不懂…</p>
+<p>于是我放弃了，决定使用外部统计（解析html）</p>
+<p>思路很简单，计算文章内<code>&lt;p&gt;</code>元素的文本内容长度就能知道字数了，但由于其他内容也会用到<code>&lt;p&gt;</code>，所以要排除掉</p>
+<p>于是我<strong>针对我的博客</strong>写了这样的脚本</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 文章信息位置</span></span><br><span class="line">    <span class="keyword">const</span> info = $(<span class="string">&quot;.φgj.φr&quot;</span>);</span><br><span class="line">    <span class="comment">// 获取正文字数</span></span><br><span class="line">    <span class="keyword">let</span> words = <span class="built_in">document</span>.querySelector(<span class="string">&quot;.φbk.φh.φz&quot;</span>).innerText.length;</span><br><span class="line">    <span class="comment">// 获取正文内图片的数量</span></span><br><span class="line">    <span class="keyword">let</span> imgs = $(<span class="string">&quot;.φbk.φh.φz img&quot;</span>).length;</span><br><span class="line">    <span class="comment">// 获取所有&lt;meting-js&gt;元素</span></span><br><span class="line">    <span class="keyword">let</span> metinglist = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;meting-js&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> meting = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 是否有该元素，有则将每个元素的文本长度相加</span></span><br><span class="line">    <span class="keyword">if</span> (metinglist.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; metinglist.length; i++) &#123;</span><br><span class="line">            meting = meting + metinglist[i].innerText.length;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取所有&lt;figure&gt;元素</span></span><br><span class="line">    <span class="keyword">let</span> codelist = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;figure&quot;</span>);</span><br><span class="line">    <span class="keyword">let</span> code = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 是否含有该元素，有则将每个元素的文本长度相加</span></span><br><span class="line">    <span class="keyword">if</span> (codelist.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; codelist.length; j++) &#123;</span><br><span class="line">            code = code + codelist[j].innerText.length;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 校正字数，正文字数 - 音乐插件字数 - 代码字符数</span></span><br><span class="line">    words = words - meting - code;</span><br><span class="line">    <span class="comment">// 估算阅读时间，范围：全文</span></span><br><span class="line">    <span class="comment">// 设每分钟阅读文字600字 / 代码800字符 / 图片10张</span></span><br><span class="line">    <span class="comment">// 结果保留一位小数</span></span><br><span class="line">    <span class="keyword">let</span> readtime = (<span class="built_in">Math</span>.round(words / <span class="number">60</span> + code / <span class="number">80</span>) + imgs) / <span class="number">10</span>;</span><br><span class="line">    <span class="comment">// 如果字数不到1000，显示原字数</span></span><br><span class="line">    <span class="keyword">if</span> (words &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">        words = <span class="string">&#x27;&amp;nbsp;&#x27;</span> + words + <span class="string">&#x27;&amp;nbsp;words&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果字数≥1000，四舍五入字数，单位改为k，结果保留一位小数</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        words = <span class="string">&#x27;&amp;nbsp;&#x27;</span> + <span class="built_in">Math</span>.round(words / <span class="number">100</span>) / <span class="number">10</span> + <span class="string">&#x27;k&#x27;</span> + <span class="string">&#x27;&amp;nbsp;words&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果阅读时间超过1分钟，加复数单位</span></span><br><span class="line">    <span class="keyword">if</span> (readtime &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        readtime = <span class="string">&#x27;&amp;nbsp;&#x27;</span> + readtime + <span class="string">&#x27;&amp;nbsp;mins&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果阅读时间≤1分钟，加单数单位</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        readtime = <span class="string">&#x27;&amp;nbsp;1 min&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 是否含有代码</span></span><br><span class="line">    <span class="keyword">if</span> (codelist.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 是</span></span><br><span class="line">        <span class="comment">// 如果代码字符数不到1000，显示原字符数</span></span><br><span class="line">        <span class="keyword">if</span> (code &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">            code = <span class="string">&#x27;&amp;nbsp;&#x27;</span> + code + <span class="string">&#x27;&amp;nbsp;chars&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果代码字符数≥1000，四舍五入字符数，单位改为k，结果保留一位小数</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            code = <span class="string">&#x27;&amp;nbsp;&#x27;</span> + <span class="built_in">Math</span>.round(code / <span class="number">100</span>) / <span class="number">10</span> + <span class="string">&#x27;k&#x27;</span> + <span class="string">&#x27;&amp;nbsp;chars&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 插入字数统计</span></span><br><span class="line">    info.append(<span class="string">&#x27;&lt;span class=&quot;words&quot;&gt;&lt;i class=&quot;ri-quill-pen-line&quot;&gt;&lt;/i&gt;&#x27;</span> + words + <span class="string">&#x27;&lt;/span&gt;&#x27;</span>);</span><br><span class="line">    <span class="comment">// 是否有代码</span></span><br><span class="line">    <span class="keyword">if</span> (codelist.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 是，插入代码统计</span></span><br><span class="line">        info.append(<span class="string">&#x27;&lt;span class=&quot;codes&quot;&gt;&amp;nbsp;&amp;nbsp;&lt;i class=&quot;ri-code-box-line&quot;&gt;&lt;/i&gt;&#x27;</span> + code + <span class="string">&#x27;&lt;/span&gt;&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 插入阅读时间</span></span><br><span class="line">    info.append(<span class="string">&#x27;&lt;span class=&quot;readtime&quot;&gt;&amp;nbsp;&amp;nbsp;&lt;i class=&quot;ri-time-line&quot;&gt;&lt;/i&gt;&#x27;</span> + readtime + <span class="string">&#x27;&lt;/span&gt;&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>实现原理：</p>
+<ol>
+<li>
+<p>获取全文的字数，获取Meting.js(音乐插件)里的字数(如果有)，获取代码的字符数(如果有)再在全文字数中减去这些字数，就能得出<strong>较为精确</strong>的字数了</p>
+</li>
+<li>
+<p>字数(精确后的字数)/600(估计每分钟浏览600字) + 代码字符数/800(估计每分钟浏览800字符) + 图片数量/10(估计每分钟浏览图片10张)，阅读时间保留一位小数</p>
+</li>
+</ol>
+<p><s>3. 字数统计会延迟一段时间再加载(让音乐插件先加载完)，本来想做个淡入的动画效果的，但经测试手机端无法显示，就改成在加载前显示&quot;Loading…&quot;了</s>(这个需要你自己加)</p>
+<p>字数统计我写了三种样式，上面是其中一种，每个统计都带单位且独立</p>
+<p><strong>注：受网络环境的影响，如果文章内插入了音乐，且音乐插件在字数统计加载前还未加载完时，会影响字数统计和阅读时间的精确度</strong></p>
+<p>还有，<strong>这个脚本的代码不是死的，你得根据实际情况修改，</strong></p>
+<h2 id="动态打字特效">动态打字特效<a title="#动态打字特效" href="#动态打字特效"></a></h2>
+<p>之前用的主题Ayer中有这个功能，了解到是用Typed.js实现的，于是也把这个功能移植到主题上了</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> typeplace = $(<span class="string">&quot;.φee&quot;</span>);</span><br><span class="line">typeplace.append(<span class="string">&#x27;&lt;span id=&quot;typedtext&quot;&gt;&lt;/span&gt;&#x27;</span>);</span><br><span class="line">typeplace.attr(<span class="string">&quot;style&quot;</span>, <span class="string">&quot;height:3rem; display:block; font-size: 110%;&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">        strings: [<span class="string">&#x27;Ciao&#x27;</span>,<span class="string">&#x27;Bonjour&#x27;</span>,<span class="string">&#x27;Kon ni chi wa&#x27;</span>],</span><br><span class="line">        startDelay: <span class="number">0</span>,</span><br><span class="line">        backDelay: <span class="number">1000</span>,</span><br><span class="line">        typeSpeed: <span class="number">80</span>,</span><br><span class="line">        backSpeed: <span class="number">60</span>,</span><br><span class="line">        loop: <span class="literal">true</span>,</span><br><span class="line">        showCursor: <span class="literal">true</span>,</span><br><span class="line">        contentType: <span class="string">&#x27;html&#x27;</span>,</span><br><span class="line">        smartBackspace: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">const</span> type = <span class="keyword">new</span> Typed(<span class="string">&quot;#typedtext&quot;</span>,options);</span><br></pre></td></tr></table></figure>
+<p>如果你只是想改文字，只需要修改<code>options</code>对象中键<code>strings</code>的值就行（数组）</p>
+<p>&quot;^200&quot;表示在此处停顿200毫秒</p>
+<ul>
+<li>startDelay：第一个文本内容开始显示的延迟</li>
+<li>backDelay：在打完文本内容后回退的延迟</li>
+<li>typeSpeed：打字速度</li>
+<li>backSpeed：回退速度</li>
+<li>loop：是否循环</li>
+<li>showCursor：显示光标</li>
+<li>smartBackspace：是否启用智能换行功能</li>
+</ul>
+<p>在plguins项中添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">sidebar</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;script</span> <span class="string">src=&quot;你的代码&quot;&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="调色盘">调色盘<a title="#调色盘" href="#调色盘"></a></h2>
+<p>调色盘是Inside主题的一个特色功能，但并不内置在主题中，需要引入文件</p>
+<p>我自己多加了两个主题，分别是雨滴(💧)和樱花(🌸)</p>
+<p>在plugins项中添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-static@latest/js/dependencies/theme.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-static@latest/js/dependencies/themes.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span> <span class="string">sidebar</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">    <span class="string">&lt;is-palette2&gt;&lt;/is-palette2&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果你想自己加主题，修改<code>themes.js</code>即可，文件是被压缩过的，需要用工具排版，这里还是推荐<a href="http://tool.chinaz.com/js.aspx" target="_blank">站长工具</a>，排版完之后就很直观了，照着格式自己加，然后把你加的压缩了再加回去就行</p>
+<ul>
+<li>accent_color：强调色，修改行内代码块，小圆点部件，按钮激活色，滚动条颜色等</li>
+<li>forebackground_color：前背景颜色，意义不明</li>
+<li>border_color：边框色，意义不明(貌似是描边的颜色？)</li>
+<li>background：背景色，可设置图片</li>
+<li>sidebar_background：侧边栏背景色，貌似只对手机端或分辨率较低的桌面端生效，桌面端一般是被背景色覆盖的，可设置图片</li>
+<li>card_background：卡片颜色，对侧边栏头像卡片和文章页面生效，可设置图片</li>
+<li>highlight：代码块高亮设置</li>
+</ul>
+<h2 id="代码高亮">代码高亮<a title="#代码高亮" href="#代码高亮"></a></h2>
+<p>代码高亮是用主题作者的<a href="https://blog.oniuo.com/post/highlighting-palette" target="_blank">Highlighting Palette</a>生成的，然后做了点修改</p>
+<p>亮色主题的代码高亮配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># onedark (modified)</span></span><br><span class="line">  <span class="attr">highlight:</span> [</span><br><span class="line">    <span class="string">&quot;#282c34&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#353b45&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#3e4451&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#545862&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#f5f5f5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#abb2bf&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#b6bdca&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#c8ccd4&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#e06c75&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#d19a66&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#e5c07b&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#98c379&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#56b6c2&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#61afef&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#c678dd&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#be5046&quot;</span></span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+<p>暗色主题的代码高亮配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ir black (modified)</span></span><br><span class="line">  <span class="attr">highlight:</span> [</span><br><span class="line">    <span class="string">&quot;#000000&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#161616&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#484844&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#6c6c66&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#f5f5f5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#b5b3aa&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#d9d7cc&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#fdfbee&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#ff6c60&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#e9c062&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#ffffb6&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#a8ff60&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#c6c5fe&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#96cbfe&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#ff73fd&quot;</span>,</span><br><span class="line">    <span class="string">&quot;#b18a3d&quot;</span></span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+<p>以上配置也可以配置在<code>themes.js</code>中，用于设置每个主题的代码高亮</p>
+<h2 id="鼠标点击特效">鼠标点击特效<a title="#鼠标点击特效" href="#鼠标点击特效"></a></h2>
+<p>鼠标点击时触发的特效，有三种特效可选，同样也移植于主题Ayer</p>
+<p><strong>注：可能会在移动端造成卡顿、掉帧现象，如出现此现象，请更换浏览器或多刷新几次页面</strong></p>
+<ul>
+<li>clickLove.js：爱心特效
+<ul>
+<li>引入方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/shelter-static@latest/js/dependencies/clickLove.js</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>clickBoom1.js：粒子波动特效
+<ul>
+<li>代码 &amp; 引入方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ver = <span class="string">&quot;1.5.0&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> canvasplace = $(<span class="string">&quot;.φbm.φk&quot;</span>);</span><br><span class="line">canvasplace.prepend(<span class="string">&#x27;&lt;canvas class=&quot;fireworks&quot;&gt;&lt;/canvas&gt;&lt;style&gt;.fireworks&#123;position:fixed;left:0;top:0;z-index:99999;pointer-events:none&#125;&lt;/style&gt;&#x27;</span>);</span><br><span class="line">canvasplace.append(<span class="string">&#x27;&lt;script src=&quot;https://cdn.jsdelivr.net/gh/PikaSama/shelter-static@&#x27;</span> + ver +<span class="string">&#x27;/js/dependencies/clickBoom1.js&quot;&gt;&lt;/script&gt;&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/animejs@latest/anime.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">你的代码</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>clickBoom2.js：粒子爆炸特效
+<ul>
+<li>代码</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ver = <span class="string">&quot;1.5.0&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> canvasplace = $(<span class="string">&quot;.φbm.φk&quot;</span>);</span><br><span class="line">canvasplace.prepend(<span class="string">&#x27;&lt;canvas width=&quot;1777&quot;height=&quot;841&quot;style=&quot;position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;&quot;&gt;&lt;/canvas&gt;&#x27;</span>);</span><br><span class="line">canvasplace.append(<span class="string">&#x27;&lt;script src=&quot;https://cdn.jsdelivr.net/gh/PikaSama/shelter-static@&#x27;</span> + ver + <span class="string">&#x27;/js/dependencies/clickBoom2.js&quot;&gt;&lt;/script&gt;&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="live2d看板娘">Live2d看板娘<a title="#live2d看板娘" href="#live2d看板娘"></a></h2>
+<p>哪个男孩不想要一个二次元看板娘呢？</p>
+<p>原项目地址：<a href="https://github.com/stevenjoezhang/live2d-widget" target="_blank">Live2d-widget</a></p>
+<p>你可以直接引用官方的<code>autoload.js</code>，如果想要自定义需要自己Fork一份，并修改<code>autoload.js</code>中资源加载路径为自己项目的</p>
+<p>看板娘的位置我放在侧边栏和文章的间隔中，不过看起来还是有点碍眼呢hhh</p>
+<p>位置的调整是基于我那超逊的1366x768分辨率屏幕修改了，可能会有显示差异hhh</p>
+<p>在plugins项中添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/gh/PikaSama/live2d-widget@latest/autoload.js</span></span><br></pre></td></tr></table></figure>
+<h2 id="音乐插件">音乐插件<a title="#音乐插件" href="#音乐插件"></a></h2>
+<p>我在用Ayer主题的时候用的音乐插件是<code>hexo-tag-aplayer</code>，结果发现换到这个主题的时候就失效了</p>
+<p>然后我还是换成了Aplayer，只不过是官方版的</p>
+<p>再配合Meting.js，可以播放多家平台的音乐</p>
+<p>在plugins项中添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">//cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">position:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">post</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">page</span></span><br><span class="line">    <span class="attr">template:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">&lt;script</span> <span class="string">src=&quot;//cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js&quot;&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后你就可以在文章里添加<code>&lt;meting-js xxxx=&quot;xx&quot;&gt;&lt;/meting-js&gt;</code>来播放音乐了</p>
+<p>具体配置方法：<a href="https://github.com/metowolf/MetingJS#quick-start" target="_blank">Meting.js</a></p>
+<h2 id="pwa">PWA<a title="#pwa" href="#pwa"></a></h2>
+<p>Writing…Maybe?</p>
+<h2 id="seo">SEO<a title="#seo" href="#seo"></a></h2>
+<p>go shin sa re ru，ta bu n</p>
+<h2 id="后记">后记<a title="#后记" href="#后记"></a></h2>
+<p>终于又填完了一个坑，这主题挺适合我的，因为它要折腾很多东西，而我恰好就是个爱折腾的人hhh</p>
+<p>同时也要感谢<code>Theme Inside</code>群里的群友们的帮助&amp;贡献，谢谢你们，我在折腾的过程中学到了不少东西</p>
+<p>感觉自己写的还不够详细，有些都是丢文档链接的23333(其实还是懒得写)</p>
+<p>如果你有什么问题，可以在下面评论，有时间会一一答复的，文章有什么错误还请各位大佬指出</p>
+<p>因为我对这个主题加了其他功能/优化，大部分功能都集成在一个js里，所以上面的代码大多都是取部分展示出来的，不能直接引用</p>
+<p>如果你想进一步折腾这个主题，可以看看这篇文章</p>
+<h3 id="续篇">续篇<a title="#续篇" href="#续篇"></a></h3>
+<p><a href="/inside-configuration-extra">Inside主题进阶配置-附加篇</a></p>
+<h2 id="感谢">感谢<a title="#感谢" href="#感谢"></a></h2>
+<h3 id="博客">博客<a title="#博客" href="#博客"></a></h3>
+<ul>
+<li>
+<p><a href="https://blog.zr.ci/" target="_blank">无名小筑</a></p>
+</li>
+<li>
+<p><a href="https://wardzhou.art/" target="_blank">白桦 Birch</a></p>
+</li>
+<li>
+<p><a href="https://blog.fiteen.top/" target="_blank">Fiteen’s Blog</a></p>
+</li>
+<li>
+<p><a href="https://blog.oniuo.com/" target="_blank">Ikeq’s Blog</a>(Inside主题作者的博客)</p>
+</li>
+<li>
+<p><a href="https://shen-yu.gitee.io/" target="_blank">岛 | Shen-yu</a>(Ayer主题作者的博客)</p>
+</li>
+</ul>
+<h3 id="文章">文章<a title="#文章" href="#文章"></a></h3>
+<ul>
+<li>
+<p><a href="https://blog.oniuo.com/theme-inside" target="_blank">Theme Inside</a></p>
+</li>
+<li>
+<p><a href="https://wardzhou.art/2020/04/14/wordcount" target="_blank">Add readable time for theme inside</a></p>
+</li>
+<li>
+<p><a href="https://blog.fiteen.top/2020/hexo-theme-inside-plugin" target="_blank">【持续更新】Hexo + inside 博客个性化定制</a></p>
+</li>
+</ul>
+<h3 id="项目">项目<a title="#项目" href="#项目"></a></h3>
+<ul>
+<li>
+<p><a href="https://github.com/stevenjoezhang/live2d-widget" target="_blank">live2d-widget</a></p>
+</li>
+<li>
+<p><a href="https://github.com/MoePlayer/APlayer" target="_blank">Aplayer</a></p>
+</li>
+<li>
+<p><a href="https://github.com/metowolf/MetingJS" target="_blank">MetingJS</a></p>
+</li>
+</ul>
+<h3 id="网站">网站<a title="#网站" href="#网站"></a></h3>
+<ul>
+<li><a href="https://www.runoob.com/" target="_blank">菜鸟教程</a></li>
+<li><a href="https://www.w3cschool.cn/" target="_blank">w3cschool</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank">JavaScript | MDN</a></li>
+</ul>
+<h3 id="封面">封面<a title="#封面" href="#封面"></a></h3>
+<ul>
+<li><a href="https://blog.oniuo.com/theme-inside" target="_blank">Theme Inside</a></li>
+</ul>
+<h3 id="其他">其他<a title="#其他" href="#其他"></a></h3>
+<p><code>Theme Inside</code>群里的群友们</p>
+<p>文章更新日期：2020.10.10 19:52</p>
+]]></content>
+      <categories>
+        <category>主题</category>
+      </categories>
+      <tags>
+        <tag>inside</tag>
+        <tag>Hexo主题</tag>
+      </tags>
+  </entry>
+</search>
