@@ -1,0 +1,38 @@
+name: Push hexo blog to gitee
+
+on:
+  push:
+    branches:
+      - hexo
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - uses: actions/cache@v2
+        id: node-modules
+        with:
+          path: node_modules/
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+      - name: Install Deps
+        if: steps.node-modules.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Build files
+        run: yarn run build
+
+      - name: Deploy
+        run: |
+          cd public
+          git init .
+          git remote add origin https://${{ secrets.GITEE_TOKEN }}@gitee.com/PikaSama_admin/blog-hexo.git
+          git add .
+          git commit -m "Github Actions"
+          git push -f origin master
