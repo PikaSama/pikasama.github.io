@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-
-Disallow: /404/
-
-Sitemap: http://shelter.beaa.cn/sitemap.xml
-Sitemap: http://shelter.beaa.cn/baidusitemap.xml
