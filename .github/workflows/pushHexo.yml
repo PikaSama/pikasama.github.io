@@ -34,7 +34,7 @@ jobs:
           git init .
           git config user.name "PikaSama"
           git config user.email "pikasama@qq.com"
-          git remote add origin https://PikaSama_admin:${{ secrets.GITEE_TOKEN }}@gitee.com/PikaSama_admin/blog-hexo.git
+          git remote add origin https://PikaSama_admin:${{ secrets.GITEE_TOKEN }}@gitee.com/PikaSama_admin/PikaSama_admin.git
           git add .
           git commit -m "Github Actions"
           git push -f origin master
