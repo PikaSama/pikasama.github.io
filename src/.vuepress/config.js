@@ -22,7 +22,7 @@ module.exports = config({
 
     hostname: "https://zorin.beaa.cn",
 
-    wordPerminute: 500,
+    wordPerminute: 400,
 
     search: false,
 
@@ -31,11 +31,8 @@ module.exports = config({
       apiKey: '974c575ebbeae9384ef0db9c4080999b',
       indexName: 'blog',
     },
-    searchPlaceholder: '搜索',
 
-    copyCode: {
-      showInMobile: true,
-    },
+    searchPlaceholder: '搜索',
 
     nav: [
       {
@@ -44,15 +41,11 @@ module.exports = config({
         link: '/',
       },
       {
-        text: '项目',
+        text: '收藏夹',
         items: [
           {
-            text: 'spider-manga',
-            link: 'https://github.com/pikasama/spider-manga',
-          },
-          {
-            text: 'spider-checkupdate',
-            link: 'https://github.com/pikasama/spider-checkupdate',
+            text: 'JavaScript',
+            link: '/collections/javascript',
           },
         ],
       },
@@ -102,7 +95,7 @@ module.exports = config({
 
     comment: {
       type: "vssue",
-      platform: 'githubv4',
+      platform: 'github-v4',
       owner: 'PikaSama',
       repo: 'pikasama.github.io',
       clientId: '59258488241b180edfe2',
@@ -189,8 +182,5 @@ module.exports = config({
         ],
       },
     },
-
-    repo: "https://github.com/pikasama/pikasama.github.io",
-    repoLabel: "Github",
   },
 });
