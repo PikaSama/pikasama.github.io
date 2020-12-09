@@ -129,7 +129,7 @@ sns:
 # Sidebar footer copyright info
 footer:
   # Set to false to hide.
-  copyright: '<span style="font-size:110%;">&copy; 2020 💖 <a href="https://zorin.beaa.cn">Zorin</a></span>'
+  copyright: '<span style="font-size:110%;">&copy; 2020 💖 <a href="https://projects-zorin.beaa.cn">Zorin</a></span>'
 
   # Set to false to hide Hexo link.
   powered: false
@@ -326,30 +326,30 @@ plugins:
   - //cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
   - //cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
   - //cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js
-  - //zorin.beaa.cn/test/modernizr.custom.js
-  - //zorin.beaa.cn/test/classie.js
-  - //zorin.beaa.cn/test/notificationFx.js
-  - //zorin.beaa.cn/test/theme.js
+  - //projects-zorin.beaa.cn/test/modernizr.custom.js
+  - //projects-zorin.beaa.cn/test/classie.js
+  - //projects-zorin.beaa.cn/test/notificationFx.js
+  - //projects-zorin.beaa.cn/test/theme.js
   # custom
-  - //zorin.beaa.cn/test/scriptLoader.js
-  - //zorin.beaa.cn/test/themes.js
+  - //projects-zorin.beaa.cn/test/scriptLoader.js
+  - //projects-zorin.beaa.cn/test/themes.js
 # css
   - //cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css
   - //cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
   - //cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css
-  - //zorin.beaa.cn/test/clipboard.css
-  - //zorin.beaa.cn/test/ns-default.css
+  - //projects-zorin.beaa.cn/test/clipboard.css
+  - //projects-zorin.beaa.cn/test/ns-default.css
   - position: sidebar
     template: |
       <is-palette2></is-palette2>
   - position: comments
     template: |
-      <script src="//zorin.beaa.cn/test/cfg-Minivaline.js"></script>
+      <script src="//projects-zorin.beaa.cn/test/cfg-Minivaline.js"></script>
   - position:
       - page
     template: |
-      <script src="//zorin.beaa.cn/test/scriptLoader-page.js"></script>
+      <script src="//projects-zorin.beaa.cn/test/scriptLoader-page.js"></script>
   - position:
       - post
     template: |
-      <script src="//zorin.beaa.cn/test/scriptLoader-post.js"></script>
+      <script src="//projects-zorin.beaa.cn/test/scriptLoader-post.js"></script>
